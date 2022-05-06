@@ -18,13 +18,13 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": true,
+            "aot": false,
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.less"
             ],
             "scripts": []
           },
@@ -61,7 +61,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "cumulocity-route-tracker-widget:build"
+            "browserTarget": "cumulocity-route-tracker-widget:build",
+            "proxyConfig": "src/proxy.conf.json"
           },
           "configurations": {
             "production": {
@@ -87,7 +88,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.less"
             ],
             "scripts": []
           }
@@ -115,6 +116,46 @@
             "production": {
               "devServerTarget": "cumulocity-route-tracker-widget:serve:production"
             }
+          }
+        }
+      }
+    },
+    "gp-route-tracker": {
+      "projectType": "library",
+      "root": "projects/gp-route-tracker",
+      "sourceRoot": "projects/gp-route-tracker/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/gp-route-tracker/tsconfig.lib.json",
+            "project": "projects/gp-route-tracker/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/gp-route-tracker/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/gp-route-tracker/src/test.ts",
+            "tsConfig": "projects/gp-route-tracker/tsconfig.spec.json",
+            "karmaConfig": "projects/gp-route-tracker/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/gp-route-tracker/tsconfig.lib.json",
+              "projects/gp-route-tracker/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }

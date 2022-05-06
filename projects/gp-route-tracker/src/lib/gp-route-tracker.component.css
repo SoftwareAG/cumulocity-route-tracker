@@ -1,0 +1,15 @@
+.route-tracker-root {
+    height: 100%;
+    width: 100%;
+    padding-left: 10px;
+    padding-bottom: 10px;
+  }
+  
+  .route-tracker-header-bar {
+    display: flex;
+    padding: 5px;
+  }
+  
+  .route-tracker-header {
+    margin-left: auto;
+  }

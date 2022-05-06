@@ -1,0 +1,15 @@
+{
+  "name": "Route Tracker Runtime Widget",
+  "contextPath": "route-tracker-runtime-widget",
+  "key": "route-tracker-runtime-widget-application-key",
+  "contentSecurityPolicy": "default-src 'self'",
+  "icon": {
+    "class": "fa fa-map-pin"
+  },
+  "manifest": {
+    "noAppSwitcher": true,
+    "requiredPlatformVersion": ">=1011.0.0",
+    "version": "1.0.0",
+    "license": "Apache 2.0"
+  }
+}
