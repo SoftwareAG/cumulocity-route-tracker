@@ -1,6 +1,6 @@
 {
   "name": "gp-route-tracker",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "peerDependencies": {
     "@angular/common": "^8.2,14",
     "@angular/core": "~8.2.14"

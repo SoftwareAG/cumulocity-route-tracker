@@ -795,14 +795,14 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
      private async creatSmartRule() {
       const data = {
           'type': 'c8y_SmartRule',
-          'name': `Route Tracker Geofence ${this.deviceId}`,
+          'name': `Route Tracker Geofence - ${this.deviceId}`,
           'enabled': true,
           'config': {
               'geofence': this.geoCoordinatesForSmartRules,
               'triggerAlarmOn': 'leaving',
               'alarmType': 'c8y_GeofenceAlarm',
-              'alarmSeverity': 'WARNING',
-              'alarmText': 'Geofence violation'
+              'alarmSeverity': 'MAJOR',
+              'alarmText': 'Geofence Violation'
           },
           'ruleTemplateName': 'onGeofenceCreateAlarm',
           'enabledSources': [
@@ -828,14 +828,14 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
       const data = {
           'id': id,
         //  'type': 'c8y_SmartRule',
-        'name': `Route Tracker Geofence ${this.deviceId}`,
+        'name': `Route Tracker Geofence - ${this.deviceId}`,
         'enabled': true,
         'config': {
             'geofence': this.geoCoordinatesForSmartRules,
             'triggerAlarmOn': 'leaving',
             'alarmType': 'c8y_GeofenceAlarm',
-            'alarmSeverity': 'WARNING',
-            'alarmText': 'Geofence violation'
+            'alarmSeverity': 'MAJOR',
+            'alarmText': 'Geofence Violation'
         },
         'ruleTemplateName': 'onGeofenceCreateAlarm',
         'enabledSources': [
@@ -854,7 +854,7 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
       return geofence; */
   }
   private async manageSmartRule() {
-    const smartRuleName = `Route Tracker Geofence ${this.deviceId}`;
+    const smartRuleName = `Route Tracker Geofence - ${this.deviceId}`;
     const options: IFetchOptions = {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
