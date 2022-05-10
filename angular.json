@@ -5,7 +5,11 @@
   "projects": {
     "cumulocity-route-tracker-widget": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "less"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -39,7 +43,9 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
+              "extractCss": true,
               "namedChunks": false,
+              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -127,15 +133,10 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
             "tsConfig": "projects/gp-route-tracker/tsconfig.lib.json",
             "project": "projects/gp-route-tracker/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/gp-route-tracker/tsconfig.lib.prod.json"
-            }
           }
         },
         "test": {

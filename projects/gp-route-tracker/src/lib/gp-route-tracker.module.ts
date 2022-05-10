@@ -24,7 +24,7 @@ import { GpRouteTrackerService } from './services/gp-route-tracker.service';
       provide: HOOK_COMPONENTS,
       multi: true,
       useValue: {
-        id: 'route-tracker-widget-1',
+        id: 'route-tracker-widget',
         label: 'Route Tracker',
         previewImage: preview.previewImage,
         description:

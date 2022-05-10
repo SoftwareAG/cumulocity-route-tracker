@@ -8,15 +8,17 @@
     "declaration": false,
     "paths": {
       "gp-route-tracker": [
-        "dist/gp-route-tracker/gp-route-tracker",
         "dist/gp-route-tracker"
+      ],
+      "gp-route-tracker/*": [
+        "dist/gp-route-tracker/*"
       ]
     },
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es6",
+    "target": "es2015",
     "module": "esnext",
     "typeRoots": [
       "node_modules/@types"
@@ -28,7 +30,6 @@
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true,
-    "enableIvy": false
+    "strictInjectionParameters": true
   }
 }

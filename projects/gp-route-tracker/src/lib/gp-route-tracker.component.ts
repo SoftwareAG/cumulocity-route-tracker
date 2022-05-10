@@ -41,14 +41,17 @@ declare global {
 import 'leaflet2/dist/leaflet.js';
 const L: any = window.L;
 const moment = moment_;
-import 'leaflet-extra-markers/dist/js/leaflet.extra-markers.js';
+import 'leaflet-extra-markers/dist/js/leaflet.extra-markers.min.js';
 import 'leaflet.markercluster/dist/leaflet.markercluster';
 import "leaflet-routing-machine";
 import { MovingMarkerService } from './services/movingMarker.service';
 import { AppIdService } from './services/app-id.service';
-import { IManagedObject, Realtime } from '@c8y/client';
+import { IFetchOptions, IManagedObject, Realtime } from '@c8y/client';
 import { GpRouteTrackerService } from './services/gp-route-tracker.service';
 import { C8Y_DEVICE_GROUP, C8Y_DEVICE_SUBGROUP } from './tokens';
+import * as turf from '@turf/turf'
+import { delay } from 'rxjs/operators';
+import { FetchClient } from '@c8y/ngx-components/api';
 
 @Component({
   selector: 'lib-gp-route-tracker',
@@ -80,6 +83,8 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
   protected featureGroup = [];
   protected layerControl = L.control.layers([], [], {});
   private allGoefences: any = [];
+  private geoCoordinatesForSmartRules: any = [];
+  protected onRouteSelected: any;
   initialMaxZoom = 14;
   isBusy = false;
   realtime = true;
@@ -111,7 +116,9 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
   };
 
   constructor(private movingMarkerService: MovingMarkerService, private appIdService: AppIdService,
-    private realTimeService: Realtime, private routeTrackerService: GpRouteTrackerService) { }
+    private realTimeService: Realtime, private routeTrackerService: GpRouteTrackerService, private fetchClient: FetchClient) { 
+      this.onRouteSelected = (evt: any) => this.__doRenderGeofencesOnMap(evt);
+    }
 
   ngOnInit(): void {
     this.initializeMap(true);
@@ -141,25 +148,16 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
     this.mapDiv = this.mapDivRef.nativeElement;
     this.mapInfosDiv = this.mapInfosDivRef.nativeElement;
 
-   // this.deviceId = '21236'; //'1215'; // '2202' ;// '23121787';
+  //  this.deviceId = '61564408'; // '21236'; //'1215'; // '2202' ;// '23121787';
     this.measurementType = {
       name: 'T', // 'PM25',
       type: 'temperature_measurement',
     };
     this.markerColor = '#797bfc';
     this.markerFontColor = '#fff';
- /*    this.routeStartPoint = [13.051430, 77.593498];
-    this.routeEndPoint = [13.098720, 77.593002]; */
-
-  /*   const geoRouteTopLeft = [this.routeStartPoint[0] - 0.1, this.routeStartPoint[1] - 0.1];
-    const geoRouteTopRight = [this.routeStartPoint[0] + 0.1, this.routeStartPoint[1] + 0.1];
-    const geoRouteBottomLeft = [this.routeEndPoint[0] - 0.1, this.routeEndPoint[1] - 0.1];
-    const geoRouteBottomRight = [this.routeEndPoint[0] + 0.1, this.routeEndPoint[1] + 0.1]; */
-    
-   /*  this.allGoefences.push(geoRouteTopLeft);
-    this.allGoefences.push(geoRouteBottomLeft);
-    this.allGoefences.push(geoRouteBottomRight);
-    this.allGoefences.push(geoRouteTopRight); */
+    /*  this.routeStartPoint = [13.051430, 77.593498];
+    this.routeEndPoint = [13.098720, 77.593002]; 
+ */
        
     if (this.inputConfig) {
       if (this.inputConfig.device) {
@@ -272,7 +270,7 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
         L.latLng(this.routeEndPoint)
       ],
       lineOptions: {
-        styles: [{ color: "blue", weight: 4 }]
+        styles: [{ color: "blue", weight: 3 }]
       },
       show: false,
       hide: true,
@@ -286,12 +284,7 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
       }
     }).addTo(this.map);
 
-    routeControl.on('routeselected', function(e) {
-      var route = e.route;
-      // Do something with the route here
-      console.log(route.coordinates);
-      this.allGoefences = route.coordinates;
-    });
+    routeControl.on('routeselected', this.onRouteSelected);
   //  this.__doRenderGeofencesOnMap();
   }
 
@@ -599,9 +592,42 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
     /**
      * Render geofence on map
      */
-    private __doRenderGeofencesOnMap() {
+    private async __doRenderGeofencesOnMap(e: any) {
+      let route = e.route;
+      // Do something with the route here
+      // console.log(route.coordinates);
+      
+      if(route && route.coordinates) {
+        route.coordinates.forEach(element => {
+          this.allGoefences.push([element.lat, element.lng]);
+        });
+      }
+      const bufferLine: any = {
+        "type": "Feature",
+        "properties": {
+          "color": "blue"
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": this.allGoefences
+        }
+      }
       const geoFencesByLevels = [];
-      const geoFence = new L.Polygon(this.allGoefences, {
+      const polygonGeometry = turf.buffer(bufferLine, 50, {
+        units: 'meters'
+      });
+      if(polygonGeometry &&  polygonGeometry.geometry && polygonGeometry.geometry.coordinates) {
+        polygonGeometry.geometry.coordinates.forEach(element => {
+          element.forEach(cord => {
+            this.geoCoordinatesForSmartRules.push( {
+              lat: cord[0], 
+              lng: cord[1]
+            });
+          });
+          
+        });
+      }
+      const geoFence = new L.Polygon(polygonGeometry.geometry.coordinates, {
         color: 'blue', weight: 1, className: 'lt-gf-base'
       });
       geoFencesByLevels.push(geoFence);
@@ -610,6 +636,7 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
       this.layerControl.addOverlay(fgOnLvl.layer, fgOnLvl.name);
       this.layerControl.addTo(this.map);
 
+      this.manageSmartRule();
       /* if (this.floorPlanData && this.floorPlanData.length > 0) {
           if (isDevMode()) { console.log('+-+- ADDITION FOUND ', this.floorPlanData); }
           this.floorPlanData.forEach((bfp) => {
@@ -761,5 +788,87 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
         this.allDeviceList = [];
       }
     }
+ 
+    /**
+     * Create smart rule for given geofence details
+     */
+     private async creatSmartRule() {
+      const data = {
+          'type': 'c8y_SmartRule',
+          'name': `Route Tracker Geofence ${this.deviceId}`,
+          'enabled': true,
+          'config': {
+              'geofence': this.geoCoordinatesForSmartRules,
+              'triggerAlarmOn': 'leaving',
+              'alarmType': 'c8y_GeofenceAlarm',
+              'alarmSeverity': 'WARNING',
+              'alarmText': 'Geofence violation'
+          },
+          'ruleTemplateName': 'onGeofenceCreateAlarm',
+          'enabledSources': [
+              this.deviceId
+          ]
+      };
+      const options: IFetchOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+      };
+      const response = (await (await this.fetchClient.fetch('/service/smartrule/smartrules', options)).json()); // Fetch API Response
+      if (response && response.id) {
+          localStorage.setItem('routeTrackerSmartRuleId', response.id);
+      }
+  }
+
   
+    /**
+     * Update exisitng smart rule for given geofence details
+     */
+     private async updateSmartRule(id) {
+      const data = {
+          'id': id,
+        //  'type': 'c8y_SmartRule',
+        'name': `Route Tracker Geofence ${this.deviceId}`,
+        'enabled': true,
+        'config': {
+            'geofence': this.geoCoordinatesForSmartRules,
+            'triggerAlarmOn': 'leaving',
+            'alarmType': 'c8y_GeofenceAlarm',
+            'alarmSeverity': 'WARNING',
+            'alarmText': 'Geofence violation'
+        },
+        'ruleTemplateName': 'onGeofenceCreateAlarm',
+        'enabledSources': [
+            this.deviceId
+        ]
+      };
+      const options: IFetchOptions = {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+      };
+      const response = (await (await this.fetchClient.fetch(`/service/smartrule/smartrules/${id}`, options)).json());
+      /* if (response && response.id) {
+          smartRuleConfig.smartRuleId = response.id;
+      }
+      return geofence; */
+  }
+  private async manageSmartRule() {
+    const smartRuleName = `Route Tracker Geofence ${this.deviceId}`;
+    const options: IFetchOptions = {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    };
+    (await (await this.fetchClient.fetch('/service/smartrule/smartrules', options))).json()
+    .then(async (smartRulesList) => {
+    //   const sessionSmartRuleId = localStorage.getItem('routeTrackerSmartRuleId');
+       const smartRuleRecord = smartRulesList.rules.find((rule) => rule.name === smartRuleName);
+     //  console.log('smartRuleRecord', smartRuleRecord);
+        if(smartRuleRecord) {
+          this.updateSmartRule(smartRuleRecord.id);
+        } else {
+          this.creatSmartRule();
+        }
+    });
+  }
 }

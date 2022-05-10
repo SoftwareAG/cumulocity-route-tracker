@@ -55,7 +55,7 @@
  import { GpRouteTrackerModule } from './../../projects/gp-route-tracker/src/lib/gp-route-tracker.module';
  
  const auth = new BasicAuth({
-   user: 'darpan.lalani',
+   user: '',
    password: '###',
    tenant: '###'
  });
