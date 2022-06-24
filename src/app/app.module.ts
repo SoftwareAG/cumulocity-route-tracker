@@ -55,9 +55,9 @@
  import { GpRouteTrackerModule } from './../../projects/gp-route-tracker/src/lib/gp-route-tracker.module';
  
  const auth = new BasicAuth({
-   user: '',
-   password: '###',
-   tenant: '###'
+   user: 'neeru.arora@softwareag.com',
+   password: 'manage@0987',
+   tenant: 't814758182'
  });
  const client = new Client(auth, 'http://localhost:4200');
  client.setAuth(auth);

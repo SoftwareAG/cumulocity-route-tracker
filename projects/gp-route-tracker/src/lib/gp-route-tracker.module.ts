@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CoreModule, HOOK_COMPONENTS } from '@c8y/ngx-components';
+import {   CoreModule, HOOK_COMPONENTS } from '@c8y/ngx-components';
 import { GpRouteTrackerComponent } from './gp-route-tracker.component';
 import { GpRouteTrackerConfigComponent } from './route-tracker-config/gp-route-tracker-config.component';
 import * as preview from './preview-image';
@@ -12,7 +12,8 @@ import { GpRouteTrackerService } from './services/gp-route-tracker.service';
   declarations: [GpRouteTrackerComponent, GpRouteTrackerConfigComponent],
   imports: [
     CoreModule,
-    AngularResizedEventModule
+    AngularResizedEventModule,
+    
   ],
   exports: [GpRouteTrackerComponent,GpRouteTrackerConfigComponent],
   entryComponents: [GpRouteTrackerComponent,GpRouteTrackerConfigComponent],

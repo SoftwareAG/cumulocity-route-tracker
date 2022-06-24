@@ -1,6 +1,6 @@
 {
     "/": {
-    "target": "",
+    "target": "https://appbuilder.eu-latest.cumulocity.com/",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "info"

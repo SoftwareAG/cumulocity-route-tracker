@@ -13,13 +13,15 @@ export class GpRouteTrackerConfigComponent implements OnInit {
     { value: 'entering', viewValue: 'On entering' },
     { value: 'leaving', viewValue: 'On leaving' },
     { value: 'both', viewValue: 'On entering and leaving' }
-];
+  ];
   smartRuleSeverityOptions = ['WARNING', 'MINOR', 'MAJOR', 'CRITICAL'];
+  userSelectedColor = [];
+
   constructor() { }
 
 
   ngOnInit(): void {
-    if(this.config && this.config.smartRuleConfig) {
+    if (this.config && this.config.smartRuleConfig) {
       this.smartRuleConfig = this.config.smartRuleConfig;
     }
   }
@@ -28,4 +30,15 @@ export class GpRouteTrackerConfigComponent implements OnInit {
     this.config.smartRuleConfig = this.smartRuleConfig;
 
   }
+  // Update the colors input from color picker
+  colorUpdate(colorSelected) {
+    this.config.iconColor = colorSelected
+  }
+  // Update the colors input from color input box
+  colorUpdateByTyping(colorTyped) {
+    console.log('typed', colorTyped);
+    this.config.iconColor = colorTyped
+
+  }
+  
 }

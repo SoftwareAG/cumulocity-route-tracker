@@ -148,16 +148,17 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
     this.mapDiv = this.mapDivRef.nativeElement;
     this.mapInfosDiv = this.mapInfosDivRef.nativeElement;
 
-  //  this.deviceId = '61564408'; // '21236'; //'1215'; // '2202' ;// '23121787';
+   this.deviceId = '1215'; // '21236'; //'1215'; // '2202' ;// '23121787';
     this.measurementType = {
       name: 'T', // 'PM25',
       type: 'temperature_measurement',
     };
     this.markerColor = '#797bfc';
     this.markerFontColor = '#fff';
-    /*  this.routeStartPoint = [13.051430, 77.593498];
+//  
+    this.routeStartPoint = [13.051430, 77.593498];
     this.routeEndPoint = [13.098720, 77.593002]; 
- */
+ 
        
     if (this.inputConfig) {
       if (this.inputConfig.device) {
@@ -531,6 +532,7 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
       const iconMarker = L.ExtraMarkers.icon({
         icon: 'fa-truck',
         iconColor: 'yellow', // this.markerFontColor,
+        iconSize:200,
         extraClasses: 'fa-rt',
         markerColor: '#1776bf', //this.markerColor,
         shape: 'square',

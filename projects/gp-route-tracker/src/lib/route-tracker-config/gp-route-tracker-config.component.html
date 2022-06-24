@@ -1,97 +1,110 @@
-<div >
-    <c8y-form-group>
-        <div class="row">
-            <div class="col-sm-12 form-horizontal">
-              <div class="col-sm-12 form-group">
-                <label class="col-sm-4 control-label">Route Start Point:</label>
-                <div class="col-sm-4">
-                  <input type="text" [(ngModel)]="config.startLat" id="startLat" class="form-control"
-                    placeholder="Latitude">
-                </div>
-                <div class="col-sm-4">
-                    <input type="text" [(ngModel)]="config.startLng" id="startLng" class="form-control"
-                      placeholder="Longitude">
-                  </div>
-              </div>
-              </div>
+<div>
+  <c8y-form-group>
+    <div class="row">
+      <div class="col-sm-12 form-horizontal">
+        <div class="col-sm-12 form-group">
+          <label class="col-sm-4 control-label">Route Start Point:</label>
+          <div class="col-sm-4">
+            <input type="text" [(ngModel)]="config.startLat" id="startLat" class="form-control" placeholder="Latitude">
           </div>
-          <div class="row">
-            <div class="col-sm-12 form-horizontal">
-              <div class="col-sm-12 form-group">
-                <label class="col-sm-4 control-label">Route End Point:</label>
-                <div class="col-sm-4">
-                  <input type="text" [(ngModel)]="config.endLat" id="endLat" class="form-control"
-                    placeholder="Latitude">
-                </div>
-                <div class="col-sm-4">
-                    <input type="text" [(ngModel)]="config.endLng" id="endLng" class="form-control"
-                      placeholder="Longitude">
-                  </div>
-              </div>
-              </div>
+          <div class="col-sm-4">
+            <input type="text" [(ngModel)]="config.startLng" id="startLng" class="form-control" placeholder="Longitude">
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 form-horizontal">
+        <div class="col-sm-12 form-group">
+          <label class="col-sm-4 control-label">Route End Point:</label>
+          <div class="col-sm-4">
+            <input type="text" [(ngModel)]="config.endLat" id="endLat" class="form-control" placeholder="Latitude">
+          </div>
+          <div class="col-sm-4">
+            <input type="text" [(ngModel)]="config.endLng" id="endLng" class="form-control" placeholder="Longitude">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row col-sm-12">
+      <label class="mb-2 ltc-title-label" style="padding-top: 10px;">Icon Configuration</label>
+    </div>
+    <div class="row col-sm-12">
+      <div class="col-sm-6">
+        <label for="smartRuleName" class="control-label">Icon Name</label>
+        <div class="">
+          <input type="text" [(ngModel)]="config.iconName" id="iconName" name="iconName" class="form-control"
+            placeholder="FontAwesome Icon Name">
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-3">
+        <label title="iconColor" for="iconColor">Icon Color</label>
+        <input type="text" name="iconColor" [(ngModel)]="config.iconColor"
+          (change)="colorUpdateByTyping($event.target.value)" size="7" maxlength="7">
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-3">
+        <br />
+        <input class="form-control" type="color" placeholder="Enter color HEX"
+          (change)="colorUpdate($event.target.value)" >
+      </div>
+    </div>
 
-          <!-- <div class="row col-sm-12">
-              <label class="mb-2 ltc-title-label" style="padding-top: 10px;">Add Smart Rule</label>
-            </div>
-          <div class="row col-sm-12">
-                <div class="col-sm-6 geofence-field-item">
-                  <label for="smartRuleName" class="control-label">Rule Name</label>
-                  <div class="">
-                    <input type="text"  [(ngModel)]="smartRuleConfig.smartRuleName" id="smartRuleName" 
-                    name="smartRuleName" class="form-control"
-                    placeholder="On geofence create alarm" >
-                  </div>
-                </div>
-                <div class="col-sm-6 geofence-field-item">
-                  <label for="smartRuleTrigger" class="control-label">Trigger On</label>
-                  <div class="">
-                      <select  [(ngModel)]="smartRuleConfig.smartRuleTrigger" 
-                      name="smartRuleTrigger" id="smartRuleTrigger" class="input-sm">
-                          <option *ngFor="let smartRuleTriggerOption of smartRuleTriggerOptions"
-                          [ngValue]='smartRuleTriggerOption.value'
-                          [attr.selected]="!smartRuleConfig.smartRuleTrigger ||
+    <div class="row col-sm-12">
+      <label class="mb-2 ltc-title-label" style="padding-top: 10px;">Add Smart Rule</label>
+    </div>
+    <div class="row col-sm-12">
+      <div class="col-sm-6 geofence-field-item">
+        <label for="smartRuleName" class="control-label">Rule Name</label>
+        <div class="">
+          <input type="text" [(ngModel)]="smartRuleConfig.smartRuleName" id="smartRuleName" name="smartRuleName"
+            class="form-control" placeholder="On geofence create alarm">
+        </div>
+      </div>
+      <div class="col-sm-6 geofence-field-item">
+        <label for="smartRuleTrigger" class="control-label">Trigger On</label>
+        <div class="">
+          <select [(ngModel)]="smartRuleConfig.smartRuleTrigger" name="smartRuleTrigger" id="smartRuleTrigger"
+            class="input-sm">
+            <option *ngFor="let smartRuleTriggerOption of smartRuleTriggerOptions"
+              [ngValue]='smartRuleTriggerOption.value' [attr.selected]="!smartRuleConfig.smartRuleTrigger ||
                           smartRuleConfig.smartRuleTrigger === smartRuleTriggerOption.value">
-                              {{smartRuleTriggerOption.viewValue}}</option>
-                      </select>
-                  </div>
-                </div>
-            </div>
-              <div class="row col-sm-12">
-                <div class="col-sm-6 geofence-field-item">
-                  <label for="smartRuleType" class="control-label">Alarm Type</label>
-                  <div class="">
-                    <input type="text"  [(ngModel)]="smartRuleConfig.smartRuleType" id="smartRuleType" 
-                    name="smartRuleType" class="form-control"
-                    placeholder="c8y_GeofenceAlarm" >
-                  </div>
-                </div>
-                <div class="col-sm-6 geofence-field-item">
-                   <label for="smartRuleSeverity" class=" control-label">Alarm Severity</label>
-                    <div class="">
-                      <select  [(ngModel)]="smartRuleConfig.smartRuleSeverity" 
-                      name="smartRuleSeverity" id="smartRuleSeverity" class="input-sm">
-                          <option *ngFor="let smartRuleSeverityOption of smartRuleSeverityOptions"
-                          [ngValue]='smartRuleSeverityOption'
-                          [attr.selected]="!smartRuleConfig.smartRuleSeverity ||
+              {{smartRuleTriggerOption.viewValue}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row col-sm-12">
+      <div class="col-sm-6 geofence-field-item">
+        <label for="smartRuleType" class="control-label">Alarm Type</label>
+        <div class="">
+          <input type="text" [(ngModel)]="smartRuleConfig.smartRuleType" id="smartRuleType" name="smartRuleType"
+            class="form-control" placeholder="c8y_GeofenceAlarm">
+        </div>
+      </div>
+      <div class="col-sm-6 geofence-field-item">
+        <label for="smartRuleSeverity" class=" control-label">Alarm Severity</label>
+        <div class="">
+          <select [(ngModel)]="smartRuleConfig.smartRuleSeverity" name="smartRuleSeverity" id="smartRuleSeverity"
+            class="input-sm">
+            <option *ngFor="let smartRuleSeverityOption of smartRuleSeverityOptions" [ngValue]='smartRuleSeverityOption'
+              [attr.selected]="!smartRuleConfig.smartRuleSeverity ||
                           smartRuleConfig.smartRuleSeverity === smartRuleSeverityOption">
-                              {{smartRuleSeverityOption}}</option>
-                      </select>
-                    </div>
-                </div>
-              </div>
-              <div class="row col-sm-12">
-                <div class="col-sm-6 geofence-field-item">
-                  <label for="smartRuleText" class="control-label">Alarm Text</label>
-                  <div class="">
-                    <input type="text"  [(ngModel)]="smartRuleConfig.smartRuleText" id="smartRuleText" 
-                    name="smartRuleText" class="form-control"
-                    placeholder="Geofence violation" >
-                  </div>
-                </div>
-                <div class="col-sm-6 m-t-24" >
-                  <button class="btn btn-primary" onclick="updateSmartRule()">Add/Update Smart Rule</button>
-                </div>
-            </div>   -->
-    </c8y-form-group>
+              {{smartRuleSeverityOption}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row col-sm-12">
+      <div class="col-sm-6 geofence-field-item">
+        <label for="smartRuleText" class="control-label">Alarm Text</label>
+        <div class="">
+          <input type="text" [(ngModel)]="smartRuleConfig.smartRuleText" id="smartRuleText" name="smartRuleText"
+            class="form-control" placeholder="Geofence violation">
+        </div>
+      </div>
+      <div class="col-sm-6 m-t-24">
+        <button class="btn btn-primary" onclick="updateSmartRule()">Add/Update Smart Rule</button>
+      </div>
+    </div>
+  </c8y-form-group>
 </div>

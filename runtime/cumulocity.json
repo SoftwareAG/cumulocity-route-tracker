@@ -8,7 +8,7 @@
   },
   "manifest": {
     "noAppSwitcher": true,
-    "requiredPlatformVersion": ">=1009.0.0",
+    "requiredPlatformVersion": ">=1011.0.0",
     "version": "1.0.0",
     "license": "Apache 2.0"
   }
