@@ -7,13 +7,17 @@ import { AngularResizedEventModule } from 'angular-resize-event';
 import { MovingMarkerService } from './services/movingMarker.service';
 import { AppIdService } from './services/app-id.service';
 import { GpRouteTrackerService } from './services/gp-route-tracker.service';
+import { IconSelectorModule } from './icon-selector/icon-selector.module';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { LocationSearchService } from './services/locationSearch.service';
 
 @NgModule({
   declarations: [GpRouteTrackerComponent, GpRouteTrackerConfigComponent],
   imports: [
-    CoreModule,
+  CoreModule,
     AngularResizedEventModule,
-    
+    IconSelectorModule,
+    TypeaheadModule.forRoot()
   ],
   exports: [GpRouteTrackerComponent,GpRouteTrackerConfigComponent],
   entryComponents: [GpRouteTrackerComponent,GpRouteTrackerConfigComponent],
@@ -21,6 +25,7 @@ import { GpRouteTrackerService } from './services/gp-route-tracker.service';
     MovingMarkerService,
     AppIdService,
     GpRouteTrackerService,
+    LocationSearchService,
     {
       provide: HOOK_COMPONENTS,
       multi: true,

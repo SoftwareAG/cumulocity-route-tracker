@@ -52,7 +52,7 @@ import { C8Y_DEVICE_GROUP, C8Y_DEVICE_SUBGROUP } from './tokens';
 import * as turf from '@turf/turf'
 import { delay } from 'rxjs/operators';
 import { FetchClient } from '@c8y/ngx-components/api';
-
+import 'leaflet.markercluster';
 @Component({
   selector: 'lib-gp-route-tracker',
   templateUrl: './gp-route-tracker.component.html',
@@ -156,8 +156,8 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
     this.markerColor = '#797bfc';
     this.markerFontColor = '#fff';
 //  
-    this.routeStartPoint = [13.051430, 77.593498];
-    this.routeEndPoint = [13.098720, 77.593002]; 
+    // this.routeStartPoint = [13.051430, 77.593498];
+    // this.routeEndPoint = [13.098720, 77.593002]; 
  
        
     if (this.inputConfig) {
@@ -166,18 +166,21 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
       }
       this.routeStartPoint = [parseFloat(this.inputConfig.startLat), parseFloat(this.inputConfig.startLng)];
       this.routeEndPoint = [parseFloat(this.inputConfig.endLat), parseFloat(this.inputConfig.endLng)];
-      /* this.measurementType = this.inputConfig.measurementType;
-      this.markerColor = this.inputConfig.markerColor;
-      this.markerFontColor = this.inputConfig.markerFontColor;
-      this.dashboardField = this.inputConfig.dashboardField;
-      this.tabGroupField = this.inputConfig.tabGroupField;
-      this.isClusterMap = this.inputConfig.isClusterMap;
-      if (
-        this.inputConfig.outdoorZoom !== null &&
-        this.inputConfig.outdoorZoom !== undefined
-      ) {
-        this.initialMaxZoom = this.inputConfig.outdoorZoom;
-      } */
+      console.log('routeStartPoint',this.routeStartPoint);
+      console.log('routeEndPoint',this.routeEndPoint);
+
+      // this.measurementType = this.inputConfig.measurementType;
+      // this.markerColor = this.inputConfig.markerColor;
+      // this.markerFontColor = this.inputConfig.markerFontColor;
+      // this.dashboardField = this.inputConfig.dashboardField;
+      // this.tabGroupField = this.inputConfig.tabGroupField;
+      // this.isClusterMap = this.inputConfig.isClusterMap;
+      // if (
+      //   this.inputConfig.outdoorZoom !== null &&
+      //   this.inputConfig.outdoorZoom !== undefined
+      // ) {
+      //   this.initialMaxZoom = this.inputConfig.outdoorZoom;
+      // } 
     }
 
     if (!isFirstCall) {
@@ -528,17 +531,19 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
      * This method is used to create marker for given device
      */
     private createMarker(mo: IManagedObject) {
+      console.log('Input config',this.inputConfig);
       // add floor plan, stored in the position's altitude, as option in the marker for later comparisons...
       const iconMarker = L.ExtraMarkers.icon({
-        icon: 'fa-truck',
-        iconColor: 'yellow', // this.markerFontColor,
-        iconSize:200,
+        icon: 'fa-'+this.inputConfig.iconName,//'fa-truck'
+        iconColor:this.inputConfig.iconColor, // this.markerFontColor,'yellow'
+        iconSize: [200, 200], // size of the icon
         extraClasses: 'fa-rt',
         markerColor: '#1776bf', //this.markerColor,
         shape: 'square',
         svg: 'false',
         prefix: 'fa',
       });
+      console.log('iconMarker',iconMarker);
       const iconOpts = {
         title: mo.name,
         id: mo.id,

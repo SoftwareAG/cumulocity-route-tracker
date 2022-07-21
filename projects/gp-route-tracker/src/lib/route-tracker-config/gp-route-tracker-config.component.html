@@ -1,9 +1,45 @@
 <div>
   <c8y-form-group>
+    <!-- <form (ngSubmit)=""> -->
+    <div class="row">
+      <div class="col-sm-12 form-horizontal">
+        <div class="col-sm-12 form-group">
+          <label class="col-sm-4 control-label">Address</label>
+          <div class="col-sm-4">
+
+            <div *ngIf="isLoading" style="color:blue;margin: 5px;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
+            <!-- <input type="text" [(ngModel)]="config.address" id="address" class="form-control" placeholder="Address" >
+              <span class="input-group-btn">
+                <button class="btn btn-clean text-primary" type="button" (click)="getLatLong(config.address)" >
+                  <i c8y-icon="search"  class="dlt-c8y-icon-search"></i>
+                </button>
+                
+              </span> -->
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- </form> -->
     <div class="row">
       <div class="col-sm-12 form-horizontal">
         <div class="col-sm-12 form-group">
           <label class="col-sm-4 control-label">Route Start Point:</label>
+          <label class="col-sm-8 control-label">{{config.routeStartPlace}}</label>
+
+        </div>
+        <div class="col-sm-12 form-group">
+          <div id="searchLocation" class="col-sm-4 input-group input-group-search" style="padding-right: 0;float: left;">
+            <input type="search" class="form-control" placeholder="Search your location" [(ngModel)]="value"
+              [typeahead]="suggestions$" (typeaheadLoading)="changeTypeaheadLoading($event)" [typeaheadAsync]="true"
+              typeaheadWaitMs="500" typeaheadOptionField="display_name"
+              (typeaheadOnSelect)="onRouteStartSelect($event)" [isAnimated]="true" autocomplete="off"
+              [typeaheadOptionsLimit]="5" [typeaheadMinLength]="3" />
+            <span class="input-group-addon">
+              <i c8yIcon="search" *ngIf="!value || value.length === 0"></i>
+              <i c8yIcon="times" class="text-muted" *ngIf="value && value.length > 0" (click)="value = ''"></i>
+            </span>
+          </div>
           <div class="col-sm-4">
             <input type="text" [(ngModel)]="config.startLat" id="startLat" class="form-control" placeholder="Latitude">
           </div>
@@ -16,7 +52,23 @@
     <div class="row">
       <div class="col-sm-12 form-horizontal">
         <div class="col-sm-12 form-group">
-          <label class="col-sm-4 control-label">Route End Point:</label>
+
+        <label class="col-sm-4 control-label">Route End Point:</label>
+        <label class="col-sm-8 control-label">{{config.routeEndPlace}}</label>
+
+        </div>
+        <div class="col-sm-12 form-group">
+          <div id="searchLocation" class="col-sm-4 input-group input-group-search" style="padding-right: 0;float: left;">
+            <input type="search" class="form-control" placeholder="Search your location" [(ngModel)]="routeEndvalue"
+              [typeahead]="routeEndSuggestions$" (typeaheadLoading)="changeTypeaheadLoading($event)" [typeaheadAsync]="true"
+              typeaheadWaitMs="500" typeaheadOptionField="display_name"
+              (typeaheadOnSelect)="onRouteEndSelect($event)" [isAnimated]="true" autocomplete="off"
+              [typeaheadOptionsLimit]="5" [typeaheadMinLength]="3" />
+            <span class="input-group-addon">
+              <i c8yIcon="search" *ngIf="!routeEndvalue || routeEndvalue.length === 0"></i>
+              <i c8yIcon="times" class="text-muted" *ngIf="routeEndvalue && routeEndvalue.length > 0" (click)="routeEndvalue = ''"></i>
+            </span>
+          </div>
           <div class="col-sm-4">
             <input type="text" [(ngModel)]="config.endLat" id="endLat" class="form-control" placeholder="Latitude">
           </div>
@@ -26,6 +78,7 @@
         </div>
       </div>
     </div>
+
     <div class="row col-sm-12">
       <label class="mb-2 ltc-title-label" style="padding-top: 10px;">Icon Configuration</label>
     </div>
@@ -33,8 +86,9 @@
       <div class="col-sm-6">
         <label for="smartRuleName" class="control-label">Icon Name</label>
         <div class="">
-          <input type="text" [(ngModel)]="config.iconName" id="iconName" name="iconName" class="form-control"
-            placeholder="FontAwesome Icon Name">
+          <!-- <input type="text" [(ngModel)]="config.iconName" id="iconName" name="iconName" class="form-control"
+            placeholder="FontAwesome Icon Name"> -->
+          <icon-selector id="icon" name="icon" [(value)]="config.iconName"></icon-selector>
         </div>
       </div>
       <div class="col-xs-3 col-md-3 col-sm-3">
@@ -45,7 +99,7 @@
       <div class="col-xs-3 col-md-3 col-sm-3">
         <br />
         <input class="form-control" type="color" placeholder="Enter color HEX"
-          (change)="colorUpdate($event.target.value)" >
+          (change)="colorUpdate($event.target.value)">
       </div>
     </div>
 
