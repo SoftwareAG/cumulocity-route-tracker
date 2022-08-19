@@ -1,6 +1,18 @@
 <div>
   <c8y-form-group>
-    <!-- <form (ngSubmit)=""> -->
+    <div class="row col-sm-12">
+      <label class="mb-2 ltc-title-label" style="padding-top: 10px;">Geofence Configuration</label>
+    </div>
+    <div class="row col-sm-12">
+      <div class="col-sm-6 geofence-field-item">
+        <label for="geofenceRadius" class="control-label">Geofence Radius(in meters)</label>
+        <div class="">
+          <input type="number" min="1" [(ngModel)]="config.geofenceRadius" id="geofenceRadius" name="geofenceRadius"
+            class="form-control" placeholder="Specify geofence Radius" [(value)]="config.geofenceRadius">
+            <span id="helpBlock" class="help-block"> e.g. 50 meters </span>
+        </div>
+      </div>
+    </div>
     <div class="row">
       <div class="col-sm-12 form-horizontal">
         <div class="col-sm-12 form-group">
@@ -8,19 +20,11 @@
           <div class="col-sm-4">
 
             <div *ngIf="isLoading" style="color:blue;margin: 5px;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
-            <!-- <input type="text" [(ngModel)]="config.address" id="address" class="form-control" placeholder="Address" >
-              <span class="input-group-btn">
-                <button class="btn btn-clean text-primary" type="button" (click)="getLatLong(config.address)" >
-                  <i c8y-icon="search"  class="dlt-c8y-icon-search"></i>
-                </button>
-                
-              </span> -->
           </div>
 
         </div>
       </div>
     </div>
-    <!-- </form> -->
     <div class="row">
       <div class="col-sm-12 form-horizontal">
         <div class="col-sm-12 form-group">
@@ -78,16 +82,26 @@
         </div>
       </div>
     </div>
-
+    <div class="form-group row col-sm-12 markercolor-map-row-padding ">
+      <label class=" col-sm-4 control-label">Marker Color: </label>
+          <div class="col-sm-4 ">
+           <input type="text" id="markerColor" name="markerColor"
+               [(ngModel)]="config.markerColor" (click)="openColorPicker()"
+               placeholder="Color code i.e #0899CC or leave blank for default colors">
+          </div>
+          <div class="col-sm-4 ">
+           <app-color-picker [ngClass]="isOpenCP? 'colorPickerModal': 'hideColorPicker'"
+               (closeColorPicker)="closeColorPicker()" (colorSet)="setSelectedColor($event)">
+           </app-color-picker>
+       </div>
+  </div>
     <div class="row col-sm-12">
       <label class="mb-2 ltc-title-label" style="padding-top: 10px;">Icon Configuration</label>
     </div>
     <div class="row col-sm-12">
       <div class="col-sm-6">
-        <label for="smartRuleName" class="control-label">Icon Name</label>
+        <label for="iconName" class="control-label">Icon Name</label>
         <div class="">
-          <!-- <input type="text" [(ngModel)]="config.iconName" id="iconName" name="iconName" class="form-control"
-            placeholder="FontAwesome Icon Name"> -->
           <icon-selector id="icon" name="icon" [(value)]="config.iconName"></icon-selector>
         </div>
       </div>
@@ -102,16 +116,15 @@
           (change)="colorUpdate($event.target.value)">
       </div>
     </div>
-
     <div class="row col-sm-12">
-      <label class="mb-2 ltc-title-label" style="padding-top: 10px;">Add Smart Rule</label>
+      <label class="mb-2 ltc-title-label" style="padding-top: 10px;">Smart Rule Configuration</label>
     </div>
     <div class="row col-sm-12">
       <div class="col-sm-6 geofence-field-item">
         <label for="smartRuleName" class="control-label">Rule Name</label>
         <div class="">
           <input type="text" [(ngModel)]="smartRuleConfig.smartRuleName" id="smartRuleName" name="smartRuleName"
-            class="form-control" placeholder="On geofence create alarm">
+            class="form-control" placeholder="On geofence create alarm" [(value)]="smartRuleConfig.smartRuleName">
         </div>
       </div>
       <div class="col-sm-6 geofence-field-item">
@@ -156,9 +169,9 @@
             class="form-control" placeholder="Geofence violation">
         </div>
       </div>
-      <div class="col-sm-6 m-t-24">
+      <!-- <div class="col-sm-6 m-t-24">
         <button class="btn btn-primary" onclick="updateSmartRule()">Add/Update Smart Rule</button>
-      </div>
+      </div> -->
     </div>
   </c8y-form-group>
 </div>

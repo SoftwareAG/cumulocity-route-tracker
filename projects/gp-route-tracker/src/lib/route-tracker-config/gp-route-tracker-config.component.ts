@@ -41,8 +41,11 @@ export class GpRouteTrackerConfigComponent implements OnInit {
   routeStartLngCoord;
   routeEndLatCoord;
   routeEndLngCoord;
+  geofenceRadius;
+  isOpenCP = false;
   // locationSearchAPI = 'https://open.mapquestapi.com/nominatim/v1/search.php?key=MgOKczqMYTkXK5jiMgEYGvjnTHf562mA&format=json&q=';
   constructor(private http: HttpClient, private locationSearchAPI: LocationSearchService) { }
+  
   ngOnInit(): void {
     if (this.config && this.config.smartRuleConfig) {
       this.smartRuleConfig = this.config.smartRuleConfig;
@@ -63,13 +66,15 @@ export class GpRouteTrackerConfigComponent implements OnInit {
     });
 
   }
-  updateSmartRule() {
-    this.config.smartRuleConfig = this.smartRuleConfig;
-  }
+  // updateSmartRule() {
+  //   this.config.smartRuleConfig = this.smartRuleConfig;
+  // }
+
   // Update the colors input from color picker
   colorUpdate(colorSelected) {
     this.config.iconColor = colorSelected
   }
+
   // Update the colors input from color input box
   colorUpdateByTyping(colorTyped) {
     console.log('typed', colorTyped);
@@ -140,7 +145,7 @@ export class GpRouteTrackerConfigComponent implements OnInit {
       }
     }
     const geoFencesByLevels = [];
-    const polygonGeometry = turf.buffer(bufferLine, 50, {
+    const polygonGeometry = turf.buffer(bufferLine, this.geofenceRadius, {
       units: 'meters'
     });
     // if(polygonGeometry &&  polygonGeometry.geometry && polygonGeometry.geometry.coordinates) {
@@ -163,5 +168,28 @@ export class GpRouteTrackerConfigComponent implements OnInit {
     this.layerControl.addOverlay(fgOnLvl.layer, fgOnLvl.name);
     this.layerControl.addTo(this.map);
     console.log('geoFence =>    =>  ', this.allGoefences, geoFence);
+  }
+  openColorPicker() {
+    if (!this.isOpenCP) {
+      this.isOpenCP = true;
+    }
+  }
+
+  closeColorPicker() {
+    if (this.isOpenCP) {
+      this.isOpenCP = false;
+    }
+  }
+  setSelectedColor(value) {
+    if (this.config.markerColor) {
+      this.config.markerColor = this.config.markerColor + ';' + value;
+    } else {
+      this.config.markerColor = value;
+    }
+  }
+
+  async ngDoCheck(): Promise<void> {
+    this.config.smartRuleConfig = this.smartRuleConfig;
+    this.geofenceRadius = this.config.geofenceRadius;
   }
 }

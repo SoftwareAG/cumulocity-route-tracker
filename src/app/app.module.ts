@@ -19,7 +19,7 @@
  import { NgModule, Injectable } from '@angular/core';
  
  import { AppComponent } from './app.component';
- import { AppStateService, CoreModule, OptionsService } from '@c8y/ngx-components';
+ import { AppStateService, CommonModule, CoreModule, OptionsService } from '@c8y/ngx-components';
  import {
    Client,
    InventoryService,
@@ -55,9 +55,9 @@
  import { GpRouteTrackerModule } from './../../projects/gp-route-tracker/src/lib/gp-route-tracker.module';
  
  const auth = new BasicAuth({
-   user: 'neeru.arora@softwareag.com',
-   password: 'manage@0987',
-   tenant: 't814758182'
+   user: 'sabreen.irfana@softwareag.com',
+   password: 'Demo2021$',
+   tenant: 't371556546'
  });
  const client = new Client(auth, 'http://localhost:4200');
  client.setAuth(auth);
@@ -76,6 +76,7 @@
      BrowserModule,
      BrowserAnimationsModule,
      CoreModule.forRoot(),
+     CommonModule,
      TranslateModule.forRoot(),
      GpRouteTrackerModule,
      RouterModule.forRoot(
