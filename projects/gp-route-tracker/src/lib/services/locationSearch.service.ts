@@ -21,36 +21,36 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class LocationSearchService {
-    private latField: any = '';
-    private lngField: any = '';
-    private locationSearchAPI: String = 'https://open.mapquestapi.com/nominatim/v1/search.php?key=MgOKczqMYTkXK5jiMgEYGvjnTHf562mA&format=json&q=';
-    constructor(private http: HttpClient) {}
+  private latField: any = '';
+  private lngField: any = '';
+  private locationSearchAPI: string =
+    'https://open.mapquestapi.com/nominatim/v1/search.php?key=MgOKczqMYTkXK5jiMgEYGvjnTHf562mA&format=json&q=';
+  constructor(private http: HttpClient) {}
+  /**
+   * Set Location Search API settings from configuraiton
+   */
+  setSearchSettings(searchAPI: string, latField: string, lngField: string): void {
+    this.latField = latField;
+    this.lngField = lngField;
+    this.locationSearchAPI = searchAPI;
+  }
 
-    /**
-     * Set Location Search API settings from configuraiton
-     */
-    setSearchSettings(searchAPI: String, latField: String, lngField: String) {
-        this.latField = latField;
-        this.lngField = lngField;
-        this.locationSearchAPI = searchAPI;
-    }
+  isSearchDisplay(): any {
+    return this.locationSearchAPI && this.latField && this.lngField;
+  }
 
-    isSearchDisplay() {
-        return ( this.locationSearchAPI && this.latField && this.lngField);
-    }
+  /**
+   * Search Geo Loaction based on given search text
+   */
+  searchGeoLocation(searchText: string): any {
+    return this.http.get(this.locationSearchAPI + searchText);
+  }
 
-    /**
-     * Search Geo Loaction based on given search text
-     */
-    searchGeoLocation(searchText) {
-        return this.http.get(this.locationSearchAPI + searchText);
-    }
+  getLatField(): any {
+    return this.latField;
+  }
 
-    getLatField() {
-        return this.latField;
-    }
-
-    getLngField() {
-        return this.lngField;
-    }
+  getLngField(): any {
+    return this.lngField;
+  }
 }

@@ -1,3 +1,21 @@
+/**
+ * Copyright (c) 2020 Software AG, Darmstadt, Germany and/or its licensors
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { NgModule } from '@angular/core';
 import { CommonModule, CoreModule, HOOK_COMPONENTS } from '@c8y/ngx-components';
 import { GpRouteTrackerComponent } from './gp-route-tracker.component';
@@ -9,25 +27,22 @@ import { AppIdService } from './services/app-id.service';
 import { GpRouteTrackerService } from './services/gp-route-tracker.service';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { LocationSearchService } from './services/locationSearch.service';
-import {NgSelectModule} from "@ng-select/ng-select";
-import {FormsModule} from "@angular/forms";
-import {IconSelectorComponent} from "./icon-selector/icon-selector.component";
-import { ColorPickerComponent } from './color-picker/color-picker-component';
-import { ColorSliderComponent } from './color-picker/color-slider/color-slider-component';
-import { ColorPaletteComponent } from './color-picker/color-palette/color-palette-component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { FormsModule } from '@angular/forms';
+import { IconSelectorComponent } from './icon-selector/icon-selector.component';
 
 @NgModule({
-  declarations: [GpRouteTrackerComponent, GpRouteTrackerConfigComponent,IconSelectorComponent,ColorPickerComponent,ColorSliderComponent,ColorPaletteComponent],
+  declarations: [GpRouteTrackerComponent, GpRouteTrackerConfigComponent, IconSelectorComponent],
   imports: [
-  CoreModule,
-  CommonModule,
-  FormsModule,
-  AngularResizedEventModule,
-  NgSelectModule,
-  TypeaheadModule.forRoot()
+    CoreModule,
+    CommonModule,
+    FormsModule,
+    AngularResizedEventModule,
+    NgSelectModule,
+    TypeaheadModule.forRoot(),
   ],
-  exports: [GpRouteTrackerComponent,GpRouteTrackerConfigComponent,IconSelectorComponent,ColorPickerComponent],
-  entryComponents: [GpRouteTrackerComponent,GpRouteTrackerConfigComponent,IconSelectorComponent,ColorPickerComponent,ColorSliderComponent,ColorPaletteComponent,],
+  exports: [GpRouteTrackerComponent, GpRouteTrackerConfigComponent, IconSelectorComponent],
+  entryComponents: [GpRouteTrackerComponent, GpRouteTrackerConfigComponent, IconSelectorComponent],
   providers: [
     MovingMarkerService,
     AppIdService,
@@ -56,6 +71,6 @@ import { ColorPaletteComponent } from './color-picker/color-palette/color-palett
         },
       },
     },
-  ]
+  ],
 })
-export class GpRouteTrackerModule { }
+export class GpRouteTrackerModule {}

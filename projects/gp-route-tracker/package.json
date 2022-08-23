@@ -1,6 +1,9 @@
 {
   "name": "gp-route-tracker",
-  "version": "0.0.6",
+  "version": "1.0.0",
+  "description":" The Route Tracker widget will display route,geofence along with realtime device status and also one can enable the smart rule which gets trigged when smart rule violation happens.",
+  "author": "Sabreen Irfana - Software AG, Global Presales",
+  "license": "Apache 2.0",
   "peerDependencies": {
     "@angular/common": "^11.1.2",
     "@angular/core": "~11.1.2"

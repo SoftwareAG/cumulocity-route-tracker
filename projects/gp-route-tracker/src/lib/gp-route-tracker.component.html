@@ -1,15 +1,29 @@
 <div (resized)="onResized($event)" class="route-tracker-root">
-    <div #routeTrakerInfoRef>
-      <div class="route-tracker-header-bar">
-        <div class="route-tracker-header">
-          <button type="button" class="btn btn-link c8y-realtime" title="Toggle realtime" (click)="toggleRealTime()">
-            <span [ngClass]="realtime?'c8y-pulse active' : 'c8y-pulse inactive'"></span>
-            <span>Realtime</span>
-          </button>
-          <button style="color:#1776BF;margin-right: 5px;" type="button" class="btn btn-clean" (click)="refresh()"><i c8yIcon="refresh"></i></button>
-        </div>
+  <div #routeTrakerInfoRef>
+    <div class="route-tracker-header-bar">
+      <div class="route-tracker-header">
+        <button
+          type="button"
+          class="btn btn-link c8y-realtime"
+          title="Toggle realtime"
+          (click)="toggleRealTime()"
+        >
+          <span [ngClass]="realtime ? 'c8y-pulse active' : 'c8y-pulse inactive'"></span>
+          <span>Realtime</span>
+        </button>
+        <button
+          style="color: #1776bf; margin-right: 5px"
+          type="button"
+          class="btn btn-clean"
+          (click)="refresh()"
+        >
+          <i c8yIcon="refresh"></i>
+        </button>
       </div>
     </div>
-    <div style="text-align: center;margin-top: 50px;" *ngIf="isBusy"><!-- <c8y-loading ></c8y-loading> --></div>
-    <div #routeTrakerRef [style.height.px]="height" [style.width.px]="width"></div>
   </div>
+  <div style="text-align: center; margin-top: 50px" *ngIf="isBusy">
+    <!-- <c8y-loading ></c8y-loading> -->
+  </div>
+  <div #routeTrakerRef [style.height.px]="height" [style.width.px]="width"></div>
+</div>

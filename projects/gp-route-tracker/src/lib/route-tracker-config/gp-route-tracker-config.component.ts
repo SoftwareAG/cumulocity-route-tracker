@@ -1,21 +1,39 @@
+/**
+ * Copyright (c) 2020 Software AG, Darmstadt, Germany and/or its licensors
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DoCheck, Input, isDevMode, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { SmartRuleInterface } from '../interfaces/smartRule.interface';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { Observer } from 'rxjs';
 import { LocationSearchService } from './../services/locationSearch.service';
 import { LocationResult } from './../interfaces/locationSearch.model';
-import * as turf from '@turf/turf'
+import * as turf from '@turf/turf';
 
 const L: any = window.L;
 
 @Component({
-  selector: 'app-route-tracker-config',
+  selector: 'lib-app-route-tracker-config',
   templateUrl: './gp-route-tracker-config.component.html',
-  styleUrls: ['./gp-route-tracker-config.component.css']
+  styleUrls: ['./gp-route-tracker-config.component.css'],
 })
-export class GpRouteTrackerConfigComponent implements OnInit {
+export class GpRouteTrackerConfigComponent implements OnInit, DoCheck {
   @Input() config: any = {};
   smartRuleConfig: SmartRuleInterface = {};
   protected layerControl = L.control.layers([], [], {});
@@ -25,7 +43,7 @@ export class GpRouteTrackerConfigComponent implements OnInit {
   smartRuleTriggerOptions = [
     { value: 'entering', viewValue: 'On entering' },
     { value: 'leaving', viewValue: 'On leaving' },
-    { value: 'both', viewValue: 'On entering and leaving' }
+    { value: 'both', viewValue: 'On entering and leaving' },
   ];
   smartRuleSeverityOptions = ['WARNING', 'MINOR', 'MAJOR', 'CRITICAL'];
   userSelectedColor = [];
@@ -43,55 +61,70 @@ export class GpRouteTrackerConfigComponent implements OnInit {
   routeEndLngCoord;
   geofenceRadius;
   isOpenCP = false;
-  // locationSearchAPI = 'https://open.mapquestapi.com/nominatim/v1/search.php?key=MgOKczqMYTkXK5jiMgEYGvjnTHf562mA&format=json&q=';
-  constructor(private http: HttpClient, private locationSearchAPI: LocationSearchService) { }
-  
+
+  constructor(private http: HttpClient, private locationSearchAPI: LocationSearchService) {}
+
   ngOnInit(): void {
     if (this.config && this.config.smartRuleConfig) {
       this.smartRuleConfig = this.config.smartRuleConfig;
     }
     this.suggestions$ = new Observable((observer: Observer<any>) => {
-
       this.locationSearchAPI.searchGeoLocation(this.value).subscribe((res: any) => {
-        console.log(res);
+        if (isDevMode()) {
+          console.log(res);
+        }
         observer.next(res);
       });
     });
     this.routeEndSuggestions$ = new Observable((observer: Observer<any>) => {
-
       this.locationSearchAPI.searchGeoLocation(this.routeEndvalue).subscribe((res: any) => {
-        console.log(res);
+        if (isDevMode()) {
+          console.log(res);
+        }
         observer.next(res);
       });
     });
-
-  }
-  // updateSmartRule() {
-  //   this.config.smartRuleConfig = this.smartRuleConfig;
-  // }
-
-  // Update the colors input from color picker
-  colorUpdate(colorSelected) {
-    this.config.iconColor = colorSelected
   }
 
-  // Update the colors input from color input box
-  colorUpdateByTyping(colorTyped) {
-    console.log('typed', colorTyped);
-    this.config.iconColor = colorTyped
+  // Update the icon colors input from color picker
+  colorUpdate(colorSelected): void {
+    this.config.iconColor = colorSelected;
   }
 
-  calledthis(address) {
-    console.log('Address  =>  ', this.config.address, address);
+  // Update the icon colors input from color input box
+  colorUpdateByTyping(colorTyped): void {
+    if (isDevMode()) {
+      console.log('typed', colorTyped);
+    }
+    this.config.iconColor = colorTyped;
+  }
+  // Update the marker colors input from color picker
+  markerColorUpdate(colorSelected): void {
+    this.config.markerColor = colorSelected;
+  }
+
+  // Update the marker colors input from color input box
+  markerColorUpdateByTyping(colorTyped): void {
+    if (isDevMode()) {
+      console.log('typed', colorTyped);
+    }
+    this.config.markerColor = colorTyped;
+  }
+  calledthis(address): void {
+    if (isDevMode()) {
+      console.log('Address  =>  ', this.config.address, address);
+    }
   }
   changeTypeaheadLoading(e: boolean): void {
     this.isLoading = e;
   }
   /**
-     * Change map coordinates based on location search API output
-     */
-  displayFn(searchResult: LocationResult) {
-    console.log('searchResult', searchResult)
+   * Change map coordinates based on location search API output
+   */
+  displayFn(searchResult: LocationResult): void {
+    if (isDevMode()) {
+      console.log('searchResult', searchResult);
+    }
     if (searchResult) {
       this.config.startLat = searchResult.lat;
       this.config.startLng = searchResult.lon;
@@ -100,8 +133,10 @@ export class GpRouteTrackerConfigComponent implements OnInit {
       this.config.routeStartPlace = searchResult.display_name;
     }
   }
-  displayFunc(searchResult: LocationResult) {
-    console.log('searchResult', searchResult)
+  displayFunc(searchResult: LocationResult): void {
+    if (isDevMode()) {
+      console.log('searchResult', searchResult);
+    }
     if (searchResult) {
       this.config.endLat = searchResult.lat;
       this.config.endLng = searchResult.lon;
@@ -111,80 +146,50 @@ export class GpRouteTrackerConfigComponent implements OnInit {
       this.__doRenderGeofencesOnMap();
     }
   }
+
+  // On providing of start address or lat and long
   onRouteStartSelect(event: TypeaheadMatch): void {
     this.displayFn(event.item);
   }
+
+  // On providing of end address or lat and long
   onRouteEndSelect(event: TypeaheadMatch): void {
     this.displayFunc(event.item);
   }
 
   /**
-     * Render geofence on map
-     */
-  private async __doRenderGeofencesOnMap(e?: any) {
-    // let route = e.route;
-    // Do something with the route here
-    // console.log(route.coordinates);
-
-    // if(route && route.coordinates) {
-    //   route.coordinates.forEach(element => {
-    //     this.allGoefences.push([element.lat, element.lng]);
-    //   });
-    // }
+   * Render geofence on map
+   */
+  private async __doRenderGeofencesOnMap(e?: any): Promise<void> {
     this.allGoefences.push([this.routeStartLatCoord, this.routeStartLngCoord]);
     this.allGoefences.push([this.routeEndLngCoord, this.routeEndLngCoord]);
 
     const bufferLine: any = {
-      "type": "Feature",
-      "properties": {
-        "color": "blue"
+      type: 'Feature',
+      properties: {
+        color: 'blue',
       },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": this.allGoefences
-      }
-    }
+      geometry: {
+        type: 'LineString',
+        coordinates: this.allGoefences,
+      },
+    };
     const geoFencesByLevels = [];
     const polygonGeometry = turf.buffer(bufferLine, this.geofenceRadius, {
-      units: 'meters'
+      units: 'meters',
     });
-    // if(polygonGeometry &&  polygonGeometry.geometry && polygonGeometry.geometry.coordinates) {
-    //   polygonGeometry.geometry.coordinates.forEach(element => {
-    //     element.forEach(cord => {
-    //       this.geoCoordinatesForSmartRules.push( {
-    //         lat: cord[0], 
-    //         lng: cord[1]
-    //       });
-    //     });
-
-    //   });
-    // }
     const geoFence = new L.Polygon(polygonGeometry.geometry.coordinates, {
-      color: 'blue', weight: 1, className: 'lt-gf-base'
+      color: 'blue',
+      weight: 1,
+      className: 'lt-gf-base',
     });
     geoFencesByLevels.push(geoFence);
     const fgOnLvl = { name: 'GeoFence', floor: 0, layer: L.featureGroup(geoFencesByLevels) };
     fgOnLvl.layer.bringToFront();
     this.layerControl.addOverlay(fgOnLvl.layer, fgOnLvl.name);
     this.layerControl.addTo(this.map);
-    console.log('geoFence =>    =>  ', this.allGoefences, geoFence);
-  }
-  openColorPicker() {
-    if (!this.isOpenCP) {
-      this.isOpenCP = true;
-    }
-  }
-
-  closeColorPicker() {
-    if (this.isOpenCP) {
-      this.isOpenCP = false;
-    }
-  }
-  setSelectedColor(value) {
-    if (this.config.markerColor) {
-      this.config.markerColor = this.config.markerColor + ';' + value;
-    } else {
-      this.config.markerColor = value;
+    if (isDevMode()) {
+      console.log('geoFence =>    =>  ', this.allGoefences, geoFence);
     }
   }
 

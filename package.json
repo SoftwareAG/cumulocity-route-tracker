@@ -1,6 +1,9 @@
 {
   "name": "cumulocity-route-tracker-widget",
   "version": "1.0.0",
+  "description":" The Route Tracker widget will display route,geofence along with realtime device status and also one can enable the smart rule which gets trigged when smart rule violation happens.",
+  "author": "Sabreen Irfana - Software AG, Global Presales",
+  "license": "Apache 2.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -12,6 +15,7 @@
     "buildMinor": "cd projects/gp-route-tracker && npm version minor && ng build gp-route-tracker && cd ../../ && cd ./dist/gp-route-tracker && npm pack && move *.tgz ../",
     "buildMajor": "cd projects/gp-route-tracker && npm version major && ng build gp-route-tracker && cd ../../ && cd ./dist/gp-route-tracker && npm pack && move *.tgz ../",
     "serve": "ng build gp-route-tracker && npm i dist/gp-route-tracker && ng s",
+    "prettier:all": "cd projects/gp-route-tracker/src && prettier --write \"**/*.@(js|ts|html|md|css|less|json|yaml)\" \"!**/*.min.*\"",
     "runtime": "gulp --gulpfile ./runtime/gulpfile.js"
   },
   "private": true,
@@ -41,7 +45,8 @@
     "moment": "^2.26.0",
     "rxjs": "~6.6.3",
     "tslib": "^2.0.0",
-    "zone.js": "~0.11.3"
+    "zone.js": "~0.11.3",
+    "prettier": "^2.6.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.1101.2",

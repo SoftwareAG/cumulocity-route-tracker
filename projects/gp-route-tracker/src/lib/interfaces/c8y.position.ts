@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 export interface C8yPosition {
-    lng: any; // in case the coordinates are defined as string...
-    alt: any;
-    lat: any;
+  lng: any; // in case the coordinates are defined as string...
+  alt: any;
+  lat: any;
 }
