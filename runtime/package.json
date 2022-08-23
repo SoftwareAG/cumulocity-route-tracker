@@ -5,7 +5,7 @@
     "dist/bundle-src/custom-widget.js": "route-tracker-runtime-widget-CustomWidget"
   },
   "version": "1.0.0",
-  "description": "Runtime package.json for library widget (written by Software AG Global Presales)",
-  "author": "Darpankumar Lalani - Software AG, Global Presales",
+  "description":" The Route Tracker widget will display route,geofence along with realtime device status and also one can enable the smart rule which gets trigged when smart rule violation happens.",
+  "author": "Sabreen Irfana - Software AG, Global Presales",
   "license": "Apache 2.0"
 }

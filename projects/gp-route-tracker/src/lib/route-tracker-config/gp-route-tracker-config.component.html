@@ -1,39 +1,303 @@
-<div >
-    <c8y-form-group>
-        <div class="row col-sm-12">
-            <div class="col-sm-12 form-horizontal">
-                <label class="datapoint-map-label-bottom">Configuration</label>
-            </div>
+<div>
+  <c8y-form-group>
+    <div class="row col-sm-12">
+      <label class="mb-2 ltc-title-label" style="padding-top: 10px">Geofence Configuration</label>
+    </div>
+    <div class="row col-sm-12">
+      <div class="col-sm-6 geofence-field-item">
+        <label for="geofenceRadius" class="control-label">Geofence Radius(in meters)</label>
+        <div class="">
+          <input
+            type="number"
+            min="1"
+            [(ngModel)]="config.geofenceRadius"
+            id="geofenceRadius"
+            name="geofenceRadius"
+            class="form-control"
+            placeholder="Specify geofence Radius"
+            [(value)]="config.geofenceRadius"
+          />
+          <span id="helpBlock" class="help-block"> e.g. 50 meters </span>
         </div>
-        <div class="row">
-            <div class="col-sm-12 form-horizontal">
-              <div class="col-sm-12 form-group">
-                <label class="col-sm-4 control-label">Route Start Point:</label>
-                <div class="col-sm-4">
-                  <input type="text" [(ngModel)]="config.startLat" id="startLat" class="form-control"
-                    placeholder="Latitude">
-                </div>
-                <div class="col-sm-4">
-                    <input type="text" [(ngModel)]="config.startLng" id="startLng" class="form-control"
-                      placeholder="Longitude">
-                  </div>
-              </div>
-              </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 form-horizontal">
+        <div class="col-sm-12 form-group">
+          <label class="col-sm-4 control-label">Address</label>
+          <div class="col-sm-4">
+            <div *ngIf="isLoading" style="color: blue; margin: 5px">
+              <i class="fa fa-circle-o-notch fa-spin"></i>
+            </div>
           </div>
-          <div class="row">
-            <div class="col-sm-12 form-horizontal">
-              <div class="col-sm-12 form-group">
-                <label class="col-sm-4 control-label">Route End Point:</label>
-                <div class="col-sm-4">
-                  <input type="text" [(ngModel)]="config.endLat" id="endLat" class="form-control"
-                    placeholder="Latitude">
-                </div>
-                <div class="col-sm-4">
-                    <input type="text" [(ngModel)]="config.endLng" id="endLng" class="form-control"
-                      placeholder="Longitude">
-                  </div>
-              </div>
-              </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 form-horizontal">
+        <div class="col-sm-12 form-group">
+          <label class="col-sm-4 control-label">Route Start Point:</label>
+          <label class="col-sm-8 control-label">{{ config.routeStartPlace }}</label>
+        </div>
+        <div class="col-sm-12 form-group">
+          <div
+            id="searchLocation"
+            class="col-sm-4 input-group input-group-search"
+            style="padding-right: 0; float: left"
+          >
+            <input
+              type="search"
+              class="form-control"
+              placeholder="Search your location"
+              [(ngModel)]="value"
+              [typeahead]="suggestions$"
+              (typeaheadLoading)="changeTypeaheadLoading($event)"
+              [typeaheadAsync]="true"
+              typeaheadWaitMs="500"
+              typeaheadOptionField="display_name"
+              (typeaheadOnSelect)="onRouteStartSelect($event)"
+              [isAnimated]="true"
+              autocomplete="off"
+              [typeaheadOptionsLimit]="5"
+              [typeaheadMinLength]="3"
+            />
+            <span class="input-group-addon">
+              <i c8yIcon="search" *ngIf="!value || value.length === 0"></i>
+              <i
+                c8yIcon="times"
+                class="text-muted"
+                *ngIf="value && value.length > 0"
+                (click)="value = ''"
+              ></i>
+            </span>
           </div>
-    </c8y-form-group>
+          <div class="col-sm-4">
+            <input
+              type="text"
+              [(ngModel)]="config.startLat"
+              id="startLat"
+              class="form-control"
+              placeholder="Latitude"
+            />
+          </div>
+          <div class="col-sm-4">
+            <input
+              type="text"
+              [(ngModel)]="config.startLng"
+              id="startLng"
+              class="form-control"
+              placeholder="Longitude"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 form-horizontal">
+        <div class="col-sm-12 form-group">
+          <label class="col-sm-4 control-label">Route End Point:</label>
+          <label class="col-sm-8 control-label">{{ config.routeEndPlace }}</label>
+        </div>
+        <div class="col-sm-12 form-group">
+          <div
+            id="searchLocation"
+            class="col-sm-4 input-group input-group-search"
+            style="padding-right: 0; float: left"
+          >
+            <input
+              type="search"
+              class="form-control"
+              placeholder="Search your location"
+              [(ngModel)]="routeEndvalue"
+              [typeahead]="routeEndSuggestions$"
+              (typeaheadLoading)="changeTypeaheadLoading($event)"
+              [typeaheadAsync]="true"
+              typeaheadWaitMs="500"
+              typeaheadOptionField="display_name"
+              (typeaheadOnSelect)="onRouteEndSelect($event)"
+              [isAnimated]="true"
+              autocomplete="off"
+              [typeaheadOptionsLimit]="5"
+              [typeaheadMinLength]="3"
+            />
+            <span class="input-group-addon">
+              <i c8yIcon="search" *ngIf="!routeEndvalue || routeEndvalue.length === 0"></i>
+              <i
+                c8yIcon="times"
+                class="text-muted"
+                *ngIf="routeEndvalue && routeEndvalue.length > 0"
+                (click)="routeEndvalue = ''"
+              ></i>
+            </span>
+          </div>
+          <div class="col-sm-4">
+            <input
+              type="text"
+              [(ngModel)]="config.endLat"
+              id="endLat"
+              class="form-control"
+              placeholder="Latitude"
+            />
+          </div>
+          <div class="col-sm-4">
+            <input
+              type="text"
+              [(ngModel)]="config.endLng"
+              id="endLng"
+              class="form-control"
+              placeholder="Longitude"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row col-sm-12">
+      <label class="mb-2 ltc-title-label" style="padding-top: 10px">Icon Configuration</label>
+    </div>
+    <div class="row col-sm-12">
+      <div class="col-sm-6">
+        <label for="iconName" class="control-label">Icon Name</label>
+        <div class="">
+          <lib-icon-selector id="icon" name="icon" [(value)]="config.iconName"></lib-icon-selector>
+        </div>
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-3">
+        <label title="iconColor" for="iconColor">Icon Color</label>
+        <input
+          type="text"
+          name="iconColor"
+          [(ngModel)]="config.iconColor"
+          (change)="colorUpdateByTyping($event.target.value)"
+          size="7"
+          maxlength="7"
+        />
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-3">
+        <br />
+        <input
+          class="form-control"
+          type="color"
+          placeholder="Enter color HEX"
+          (change)="colorUpdate($event.target.value)"
+        />
+      </div>
+    </div>
+    <br />
+    <div class="row col-sm-12">
+      <div class="col-xs-3 col-md-3 col-sm-3">
+        <label title="markerColor" for="markerColor">Marker Color</label>
+        <input
+          type="text"
+          name="markerColor"
+          [(ngModel)]="config.markerColor"
+          (change)="markerColorUpdateByTyping($event.target.value)"
+          size="7"
+          maxlength="7"
+        />
+      </div>
+      <div class="col-xs-3 col-md-3 col-sm-3">
+        <br />
+        <input
+          class="form-control"
+          type="color"
+          placeholder="Enter color HEX"
+          (change)="markerColorUpdate($event.target.value)"
+        />
+      </div>
+    </div>
+
+    <div class="row col-sm-12">
+      <label class="mb-2 ltc-title-label" style="padding-top: 10px">Smart Rule Configuration</label>
+    </div>
+    <div class="row col-sm-12">
+      <div class="col-sm-6 geofence-field-item">
+        <label for="smartRuleName" class="control-label">Rule Name</label>
+        <div class="">
+          <input
+            type="text"
+            [(ngModel)]="smartRuleConfig.smartRuleName"
+            id="smartRuleName"
+            name="smartRuleName"
+            class="form-control"
+            placeholder="On geofence create alarm"
+            [(value)]="smartRuleConfig.smartRuleName"
+          />
+        </div>
+      </div>
+      <div class="col-sm-6 geofence-field-item">
+        <label for="smartRuleTrigger" class="control-label">Trigger On</label>
+        <div class="">
+          <select
+            [(ngModel)]="smartRuleConfig.smartRuleTrigger"
+            name="smartRuleTrigger"
+            id="smartRuleTrigger"
+            class="input-sm"
+          >
+            <option
+              *ngFor="let smartRuleTriggerOption of smartRuleTriggerOptions"
+              [ngValue]="smartRuleTriggerOption.value"
+              [attr.selected]="
+                !smartRuleConfig.smartRuleTrigger ||
+                smartRuleConfig.smartRuleTrigger === smartRuleTriggerOption.value
+              "
+            >
+              {{ smartRuleTriggerOption.viewValue }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row col-sm-12">
+      <div class="col-sm-6 geofence-field-item">
+        <label for="smartRuleType" class="control-label">Alarm Type</label>
+        <div class="">
+          <input
+            type="text"
+            [(ngModel)]="smartRuleConfig.smartRuleType"
+            id="smartRuleType"
+            name="smartRuleType"
+            class="form-control"
+            placeholder="c8y_GeofenceAlarm"
+          />
+        </div>
+      </div>
+      <div class="col-sm-6 geofence-field-item">
+        <label for="smartRuleSeverity" class="control-label">Alarm Severity</label>
+        <div class="">
+          <select
+            [(ngModel)]="smartRuleConfig.smartRuleSeverity"
+            name="smartRuleSeverity"
+            id="smartRuleSeverity"
+            class="input-sm"
+          >
+            <option
+              *ngFor="let smartRuleSeverityOption of smartRuleSeverityOptions"
+              [ngValue]="smartRuleSeverityOption"
+              [attr.selected]="
+                !smartRuleConfig.smartRuleSeverity ||
+                smartRuleConfig.smartRuleSeverity === smartRuleSeverityOption
+              "
+            >
+              {{ smartRuleSeverityOption }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row col-sm-12">
+      <div class="col-sm-6 geofence-field-item">
+        <label for="smartRuleText" class="control-label">Alarm Text</label>
+        <div class="">
+          <input
+            type="text"
+            [(ngModel)]="smartRuleConfig.smartRuleText"
+            id="smartRuleText"
+            name="smartRuleText"
+            class="form-control"
+            placeholder="Geofence violation"
+          />
+        </div>
+      </div>
+    </div>
+  </c8y-form-group>
 </div>

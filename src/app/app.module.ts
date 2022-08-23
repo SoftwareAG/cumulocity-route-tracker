@@ -17,9 +17,8 @@
  */
  import { BrowserModule } from '@angular/platform-browser';
  import { NgModule, Injectable } from '@angular/core';
- 
  import { AppComponent } from './app.component';
- import { AppStateService, CoreModule, OptionsService } from '@c8y/ngx-components';
+ import { AppStateService, CommonModule, CoreModule, OptionsService } from '@c8y/ngx-components';
  import {
    Client,
    InventoryService,
@@ -53,20 +52,18 @@
  import { TranslateModule } from '@ngx-translate/core';
  import { RouterModule } from '@angular/router';
  import { GpRouteTrackerModule } from './../../projects/gp-route-tracker/src/lib/gp-route-tracker.module';
- 
  const auth = new BasicAuth({
-   user: 'darpan.lalani',
-   password: '###',
-   tenant: '###'
+  user: 'xxx',
+  password: 'xxx',
+  tenant: 'xxx'
  });
  const client = new Client(auth, 'http://localhost:4200');
  client.setAuth(auth);
  const fetchClient = client.core;
- 
  @Injectable()
  export class MockAppStateService {
-   currentTenant = new BehaviorSubject<ICurrentTenant | null>(null);
-   currentUser = new BehaviorSubject<IUser | null>(null);
+  currentTenant = new BehaviorSubject<ICurrentTenant | null>(null);
+  currentUser = new BehaviorSubject<IUser | null>(null);
  }
  @NgModule({
    declarations: [
@@ -76,6 +73,7 @@
      BrowserModule,
      BrowserAnimationsModule,
      CoreModule.forRoot(),
+     CommonModule,
      TranslateModule.forRoot(),
      GpRouteTrackerModule,
      RouterModule.forRoot(
@@ -109,5 +107,4 @@
    ],
    bootstrap: [AppComponent]
  })
- export class AppModule { }
- 
+ export class AppModule {}

@@ -19,319 +19,325 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class MovingMarkerService {
+  /**
+   * Moving marker plugin is used to show moving animation when devices are moved from one location to another
+   */
+  initializeMovingMarker(L: any): void {
+    // tslint:disable-next-line: only-arrow-functions
+    L.interpolatePosition = function(p1, p2, duration, t): any {
+      let k = t / duration;
+      k = k > 0 ? k : 0;
+      k = k > 1 ? 1 : k;
+      return L.latLng(p1.lat + k * (p2.lat - p1.lat), p1.lng + k * (p2.lng - p1.lng));
+    };
 
-    /**
-     * Moving marker plugin is used to show moving animation when devices are moved from one location to another
-     */
- initializeMovingMarker(L: any) {
-     // tslint:disable-next-line: only-arrow-functions
-     L.interpolatePosition = function(p1, p2, duration, t) {
-         let k = t / duration;
-         k = (k > 0) ? k : 0;
-         k = (k > 1) ? 1 : k;
-         return L.latLng(p1.lat + k * (p2.lat - p1.lat),
-             p1.lng + k * (p2.lng - p1.lng));
-     };
+    L.Marker.MovingMarker = L.Marker.extend({
+      // state constants
+      statics: {
+        notStartedState: 0,
+        endedState: 1,
+        pausedState: 2,
+        runState: 3,
+      },
 
-     L.Marker.MovingMarker = L.Marker.extend({
+      options: {
+        autostart: false,
+        loop: false,
+      },
 
-         // state constants
-         statics: {
-             notStartedState: 0,
-             endedState: 1,
-             pausedState: 2,
-             runState: 3
-         },
+      // tslint:disable-next-line: object-literal-shorthand
+      initialize: function(latlngs, durations, options): void {
+        L.Marker.prototype.initialize.call(this, latlngs[0], options);
 
-         options: {
-             autostart: false,
-             loop: false,
-         },
+        // tslint:disable-next-line: only-arrow-functions
+        this._latlngs = latlngs.map(function(e, index): any {
+          return L.latLng(e);
+        });
 
-         // tslint:disable-next-line: object-literal-shorthand
-         initialize: function(latlngs, durations, options) {
-             L.Marker.prototype.initialize.call(this, latlngs[0], options);
+        if (durations instanceof Array) {
+          this._durations = durations;
+        } else {
+          this._durations = this._createDurations(this._latlngs, durations);
+        }
 
-             // tslint:disable-next-line: only-arrow-functions
-             this._latlngs = latlngs.map(function(e, index) {
-                 return L.latLng(e);
-             });
+        this._currentDuration = 0;
+        this._currentIndex = 0;
 
-             if (durations instanceof Array) {
-                 this._durations = durations;
-             } else {
-                 this._durations = this._createDurations(this._latlngs, durations);
-             }
+        this._state = L.Marker.MovingMarker.notStartedState;
+        this._startTime = 0;
+        this._startTimeStamp = 0; // timestamp given by requestAnimFrame
+        this._pauseStartTime = 0;
+        this._animId = 0;
+        this._animRequested = false;
+        this._currentLine = [];
+        this._stations = {};
+      },
 
-             this._currentDuration = 0;
-             this._currentIndex = 0;
+      // tslint:disable-next-line: object-literal-shorthand
+      isRunning: function(): boolean {
+        return this._state === L.Marker.MovingMarker.runState;
+      },
 
-             this._state = L.Marker.MovingMarker.notStartedState;
-             this._startTime = 0;
-             this._startTimeStamp = 0;  // timestamp given by requestAnimFrame
-             this._pauseStartTime = 0;
-             this._animId = 0;
-             this._animRequested = false;
-             this._currentLine = [];
-             this._stations = {};
-         },
+      isEnded(): boolean {
+        return this._state === L.Marker.MovingMarker.endedState;
+      },
 
-         // tslint:disable-next-line: object-literal-shorthand
-         isRunning: function() {
-             return this._state === L.Marker.MovingMarker.runState;
-         },
+      isStarted(): boolean {
+        return this._state !== L.Marker.MovingMarker.notStartedState;
+      },
 
-         isEnded() {
-             return this._state === L.Marker.MovingMarker.endedState;
-         },
+      isPaused(): boolean {
+        return this._state === L.Marker.MovingMarker.pausedState;
+      },
 
-         isStarted() {
-             return this._state !== L.Marker.MovingMarker.notStartedState;
-         },
+      start(): void {
+        if (this.isRunning()) {
+          return;
+        }
 
-         isPaused() {
-             return this._state === L.Marker.MovingMarker.pausedState;
-         },
+        if (this.isPaused()) {
+          this.resume();
+        } else {
+          this._loadLine(0);
+          this._startAnimation();
+          this.fire('start');
+        }
+      },
 
-         start() {
-             if (this.isRunning()) {
-                 return;
-             }
+      resume(): void {
+        if (!this.isPaused()) {
+          return;
+        }
+        // update the current line
+        this._currentLine[0] = this.getLatLng();
+        this._currentDuration -= this._pauseStartTime - this._startTime;
+        this._startAnimation();
+      },
 
-             if (this.isPaused()) {
-                 this.resume();
-             } else {
-                 this._loadLine(0);
-                 this._startAnimation();
-                 this.fire('start');
-             }
-         },
+      pause(): void {
+        if (!this.isRunning()) {
+          return;
+        }
 
-         resume() {
-             if (!this.isPaused()) {
-                 return;
-             }
-             // update the current line
-             this._currentLine[0] = this.getLatLng();
-             this._currentDuration -= (this._pauseStartTime - this._startTime);
-             this._startAnimation();
-         },
+        this._pauseStartTime = Date.now();
+        this._state = L.Marker.MovingMarker.pausedState;
+        this._stopAnimation();
+        this._updatePosition();
+      },
 
-         pause() {
-             if (!this.isRunning()) {
-                 return;
-             }
+      stop(elapsedTime): void {
+        if (this.isEnded()) {
+          return;
+        }
 
-             this._pauseStartTime = Date.now();
-             this._state = L.Marker.MovingMarker.pausedState;
-             this._stopAnimation();
-             this._updatePosition();
-         },
+        this._stopAnimation();
 
-         stop(elapsedTime) {
-             if (this.isEnded()) {
-                 return;
-             }
+        if (typeof elapsedTime === 'undefined') {
+          // user call
+          elapsedTime = 0;
+          this._updatePosition();
+        }
 
-             this._stopAnimation();
+        this._state = L.Marker.MovingMarker.endedState;
+        this.fire('end', { elapsedTime });
+      },
 
-             if (typeof (elapsedTime) === 'undefined') {
-                 // user call
-                 elapsedTime = 0;
-                 this._updatePosition();
-             }
+      addLatLng(latlng, duration): void {
+        this._latlngs.push(L.latLng(latlng));
+        this._durations.push(duration);
+      },
 
-             this._state = L.Marker.MovingMarker.endedState;
-             this.fire('end', { elapsedTime });
-         },
+      moveTo(latlng, duration): void {
+        this._stopAnimation();
+        this._latlngs = [this.getLatLng(), L.latLng(latlng)];
+        this._durations = [duration];
+        this._state = L.Marker.MovingMarker.notStartedState;
+        this.start();
+        this.options.loop = false;
+      },
 
-         addLatLng(latlng, duration) {
-             this._latlngs.push(L.latLng(latlng));
-             this._durations.push(duration);
-         },
+      addStation(pointIndex, duration): void {
+        if (pointIndex > this._latlngs.length - 2 || pointIndex < 1) {
+          return;
+        }
+        this._stations[pointIndex] = duration;
+      },
 
-         moveTo(latlng, duration) {
-             this._stopAnimation();
-             this._latlngs = [this.getLatLng(), L.latLng(latlng)];
-             this._durations = [duration];
-             this._state = L.Marker.MovingMarker.notStartedState;
-             this.start();
-             this.options.loop = false;
-         },
+      onAdd(map): void {
+        L.Marker.prototype.onAdd.call(this, map);
 
-         addStation(pointIndex, duration) {
-             if (pointIndex > this._latlngs.length - 2 || pointIndex < 1) {
-                 return;
-             }
-             this._stations[pointIndex] = duration;
-         },
+        if (this.options.autostart && !this.isStarted()) {
+          this.start();
+          return;
+        }
 
-         onAdd(map) {
-             L.Marker.prototype.onAdd.call(this, map);
+        if (this.isRunning()) {
+          this._resumeAnimation();
+        }
+      },
 
-             if (this.options.autostart && (!this.isStarted())) {
-                 this.start();
-                 return;
-             }
+      onRemove(map): void {
+        L.Marker.prototype.onRemove.call(this, map);
+        this._stopAnimation();
+      },
 
-             if (this.isRunning()) {
-                 this._resumeAnimation();
-             }
-         },
+      _createDurations(latlngs, duration): any[] {
+        const lastIndex = latlngs.length - 1;
+        const distances = [];
+        let totalDistance = 0;
+        let distance = 0;
 
-         onRemove(map) {
-             L.Marker.prototype.onRemove.call(this, map);
-             this._stopAnimation();
-         },
+        // compute array of distances between points
+        for (let i = 0; i < lastIndex; i++) {
+          distance = latlngs[i + 1].distanceTo(latlngs[i]);
+          distances.push(distance);
+          totalDistance += distance;
+        }
 
-         _createDurations(latlngs, duration) {
-             const lastIndex = latlngs.length - 1;
-             const distances = [];
-             let totalDistance = 0;
-             let distance = 0;
+        const ratioDuration = duration / totalDistance;
 
-             // compute array of distances between points
-             for (let i = 0; i < lastIndex; i++) {
-                 distance = latlngs[i + 1].distanceTo(latlngs[i]);
-                 distances.push(distance);
-                 totalDistance += distance;
-             }
+        const durations = [];
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < distances.length; i++) {
+          durations.push(distances[i] * ratioDuration);
+        }
 
-             const ratioDuration = duration / totalDistance;
+        return durations;
+      },
 
-             const durations = [];
-             // tslint:disable-next-line: prefer-for-of
-             for (let i = 0; i < distances.length; i++) {
-                 durations.push(distances[i] * ratioDuration);
-             }
+      _startAnimation(): void {
+        this._state = L.Marker.MovingMarker.runState;
+        this._animId = L.Util.requestAnimFrame(
+          function(timestamp): void {
+            this._startTime = Date.now();
+            this._startTimeStamp = timestamp;
+            this._animate(timestamp);
+          },
+          this,
+          true
+        );
+        this._animRequested = true;
+      },
 
-             return durations;
-         },
+      _resumeAnimation(): void {
+        if (!this._animRequested) {
+          this._animRequested = true;
+          this._animId = L.Util.requestAnimFrame(
+            function(timestamp): void {
+              this._animate(timestamp);
+            },
+            this,
+            true
+          );
+        }
+      },
 
-         _startAnimation() {
-             this._state = L.Marker.MovingMarker.runState;
-             this._animId = L.Util.requestAnimFrame(function(timestamp) {
-                 this._startTime = Date.now();
-                 this._startTimeStamp = timestamp;
-                 this._animate(timestamp);
-             }, this, true);
-             this._animRequested = true;
-         },
+      _stopAnimation(): void {
+        if (this._animRequested) {
+          L.Util.cancelAnimFrame(this._animId);
+          this._animRequested = false;
+        }
+      },
 
-         _resumeAnimation() {
-             if (!this._animRequested) {
-                 this._animRequested = true;
-                 this._animId = L.Util.requestAnimFrame(function(timestamp) {
-                     this._animate(timestamp);
-                 }, this, true);
-             }
-         },
+      _updatePosition(): void {
+        const elapsedTime = Date.now() - this._startTime;
+        this._animate(this._startTimeStamp + elapsedTime, true);
+      },
 
-         _stopAnimation() {
-             if (this._animRequested) {
-                 L.Util.cancelAnimFrame(this._animId);
-                 this._animRequested = false;
-             }
-         },
+      _loadLine(index): void {
+        this._currentIndex = index;
+        this._currentDuration = this._durations[index];
+        this._currentLine = this._latlngs.slice(index, index + 2);
+      },
 
-         _updatePosition() {
-             const elapsedTime = Date.now() - this._startTime;
-             this._animate(this._startTimeStamp + elapsedTime, true);
-         },
+      /**
+       * Load the line where the marker is
+       * elapsed time on the current line or null if
+       * we reached the end or marker is at a station
+       */
+      _updateLine(timestamp): number {
+        // time elapsed since the last latlng
+        let elapsedTime = timestamp - this._startTimeStamp;
 
-         _loadLine(index) {
-             this._currentIndex = index;
-             this._currentDuration = this._durations[index];
-             this._currentLine = this._latlngs.slice(index, index + 2);
-         },
+        // not enough time to update the line
+        if (elapsedTime <= this._currentDuration) {
+          return elapsedTime;
+        }
 
-         /**
-          * Load the line where the marker is
-          * elapsed time on the current line or null if
-          * we reached the end or marker is at a station
-          */
-         _updateLine(timestamp) {
-             // time elapsed since the last latlng
-             let elapsedTime = timestamp - this._startTimeStamp;
+        let lineIndex = this._currentIndex;
+        let lineDuration = this._currentDuration;
+        let stationDuration;
 
-             // not enough time to update the line
-             if (elapsedTime <= this._currentDuration) {
-                 return elapsedTime;
-             }
+        while (elapsedTime > lineDuration) {
+          // substract time of the current line
+          elapsedTime -= lineDuration;
+          stationDuration = this._stations[lineIndex + 1];
 
-             let lineIndex = this._currentIndex;
-             let lineDuration = this._currentDuration;
-             let stationDuration;
+          // test if there is a station at the end of the line
+          if (stationDuration !== undefined) {
+            if (elapsedTime < stationDuration) {
+              this.setLatLng(this._latlngs[lineIndex + 1]);
+              return null;
+            }
+            elapsedTime -= stationDuration;
+          }
 
-             while (elapsedTime > lineDuration) {
-                 // substract time of the current line
-                 elapsedTime -= lineDuration;
-                 stationDuration = this._stations[lineIndex + 1];
+          lineIndex++;
 
-                 // test if there is a station at the end of the line
-                 if (stationDuration !== undefined) {
-                     if (elapsedTime < stationDuration) {
-                         this.setLatLng(this._latlngs[lineIndex + 1]);
-                         return null;
-                     }
-                     elapsedTime -= stationDuration;
-                 }
+          // test if we have reached the end of the polyline
+          if (lineIndex >= this._latlngs.length - 1) {
+            if (this.options.loop) {
+              lineIndex = 0;
+              this.fire('loop', { elapsedTime });
+            } else {
+              // place the marker at the end, else it would be at
+              // the last position
+              this.setLatLng(this._latlngs[this._latlngs.length - 1]);
+              this.stop(elapsedTime);
+              return null;
+            }
+          }
+          lineDuration = this._durations[lineIndex];
+        }
 
-                 lineIndex++;
+        this._loadLine(lineIndex);
+        this._startTimeStamp = timestamp - elapsedTime;
+        this._startTime = Date.now() - elapsedTime;
+        return elapsedTime;
+      },
 
-                 // test if we have reached the end of the polyline
-                 if (lineIndex >= this._latlngs.length - 1) {
+      _animate(timestamp, noRequestAnim): void {
+        this._animRequested = false;
 
-                     if (this.options.loop) {
-                         lineIndex = 0;
-                         this.fire('loop', { elapsedTime });
-                     } else {
-                         // place the marker at the end, else it would be at
-                         // the last position
-                         this.setLatLng(this._latlngs[this._latlngs.length - 1]);
-                         this.stop(elapsedTime);
-                         return null;
-                     }
-                 }
-                 lineDuration = this._durations[lineIndex];
-             }
+        // find the next line and compute the new elapsedTime
+        const elapsedTime = this._updateLine(timestamp);
 
-             this._loadLine(lineIndex);
-             this._startTimeStamp = timestamp - elapsedTime;
-             this._startTime = Date.now() - elapsedTime;
-             return elapsedTime;
-         },
+        if (this.isEnded()) {
+          // no need to animate
+          return;
+        }
 
-         _animate(timestamp, noRequestAnim) {
-             this._animRequested = false;
+        if (elapsedTime != null) {
+          // compute the position
+          const p = L.interpolatePosition(
+            this._currentLine[0],
+            this._currentLine[1],
+            this._currentDuration,
+            elapsedTime
+          );
+          this.setLatLng(p);
+        }
 
-             // find the next line and compute the new elapsedTime
-             const elapsedTime = this._updateLine(timestamp);
+        if (!noRequestAnim) {
+          this._animId = L.Util.requestAnimFrame(this._animate, this, false);
+          this._animRequested = true;
+        }
+      },
+    });
 
-             if (this.isEnded()) {
-                 // no need to animate
-                 return;
-             }
-
-             if (elapsedTime != null) {
-                 // compute the position
-                 const p = L.interpolatePosition(this._currentLine[0],
-                     this._currentLine[1],
-                     this._currentDuration,
-                     elapsedTime);
-                 this.setLatLng(p);
-             }
-
-             if (!noRequestAnim) {
-                 this._animId = L.Util.requestAnimFrame(this._animate, this, false);
-                 this._animRequested = true;
-             }
-         }
-     });
-
-     // tslint:disable-next-line: only-arrow-functions
-     L.Marker.movingMarker = function(latlngs, duration, options) {
-         return new L.Marker.MovingMarker(latlngs, duration, options);
-     };
- }
+    // tslint:disable-next-line: only-arrow-functions
+    L.Marker.movingMarker = function(latlngs, duration, options): any {
+      return new L.Marker.MovingMarker(latlngs, duration, options);
+    };
+  }
 }

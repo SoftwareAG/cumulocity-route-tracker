@@ -1,0 +1,1 @@
+{"version":3,"file":"tokens.d.ts","sourceRoot":"ng://gp-route-tracker/","sources":["lib/tokens.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;GAcG;AAEH;;GAEG;AAEH,OAAO,EAAE,cAAc,EAAE,MAAM,eAAe,CAAC;AAC/C,OAAO,EAAE,iBAAiB,EAAE,MAAM,iCAAiC,CAAC;AAEpE,eAAO,MAAM,WAAW,mCAAuD,CAAC;AAChF,eAAO,MAAM,gBAAgB,oBAAoB,CAAC;AAClD,eAAO,MAAM,mBAAmB,uBAAuB,CAAC"}

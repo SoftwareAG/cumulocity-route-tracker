@@ -16,6 +16,6 @@
  * limitations under the License.
  */
 export interface InitCordInterface {
-    lat: number;
-    long: number;
+  lat: number;
+  long: number;
 }

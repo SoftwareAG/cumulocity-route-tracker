@@ -1,9 +1,6 @@
 {
   "name": "cumulocity-route-tracker-widget",
   "version": "1.0.0",
-  "description":" The Route Tracker widget will display route,geofence along with realtime device status and also one can enable the smart rule which gets trigged when smart rule violation happens.",
-  "author": "Sabreen Irfana - Software AG, Global Presales",
-  "license": "Apache 2.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -15,7 +12,6 @@
     "buildMinor": "cd projects/gp-route-tracker && npm version minor && ng build gp-route-tracker && cd ../../ && cd ./dist/gp-route-tracker && npm pack && move *.tgz ../",
     "buildMajor": "cd projects/gp-route-tracker && npm version major && ng build gp-route-tracker && cd ../../ && cd ./dist/gp-route-tracker && npm pack && move *.tgz ../",
     "serve": "ng build gp-route-tracker && npm i dist/gp-route-tracker && ng s",
-    "prettier:all": "cd projects/gp-route-tracker/src && prettier --write \"**/*.@(js|ts|html|md|css|less|json|yaml)\" \"!**/*.min.*\"",
     "runtime": "gulp --gulpfile ./runtime/gulpfile.js"
   },
   "private": true,
@@ -30,14 +26,11 @@
     "@angular/router": "~11.1.2",
     "@angular/upgrade": "11.1.2",
     "@c8y/client": "^1011.0.15",
-    "@c8y/ngx-components": "1011.0.15",
+    "@c8y/ngx-components": "^1011.0.15",
     "@c8y/style": "1011.0.15",
-    "@ng-select/ng-select": "^6.1.0",
-    "@turf/turf": "^6.5.0",
     "angular-resize-event": "^2.1.0",
-    "font-awesome": "^4.7.0",
     "fontawesome": "4.7.2",
-    "gp-route-tracker": "file:dist/gp-route-tracker",
+    "font-awesome": "^4.7.0",
     "leaflet-extra-markers": "^1.2.1",
     "leaflet-routing-machine": "^3.2.12",
     "leaflet.markercluster": "^1.4.1",
@@ -45,8 +38,7 @@
     "moment": "^2.26.0",
     "rxjs": "~6.6.3",
     "tslib": "^2.0.0",
-    "zone.js": "~0.11.3",
-    "prettier": "^2.6.2"
+    "zone.js": "~0.11.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.1101.2",
