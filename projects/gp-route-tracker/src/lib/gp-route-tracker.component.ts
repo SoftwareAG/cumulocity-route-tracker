@@ -649,7 +649,6 @@ export class GpRouteTrackerComponent implements OnInit, AfterViewInit {
    * Update marker position based on realtime device movement
    */
   private updateMarkerPosition(data: IManagedObject): void {
-    // this.allMarkers[data.id].setLatLng(new L.latLng(data.c8y_Position.lat, data.c8y_Position.lng));
     const newPosLatLng = new L.latLng(data.c8y_Position.lat, data.c8y_Position.lng);
     this.allMarkers[data.id].moveTo(newPosLatLng, 2000);
     const markerBound = new L.LatLngBounds(newPosLatLng, newPosLatLng);
