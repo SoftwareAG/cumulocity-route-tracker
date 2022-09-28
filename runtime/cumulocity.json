@@ -10,6 +10,8 @@
     "noAppSwitcher": true,
     "requiredPlatformVersion": ">=1011.0.0",
     "version": "1.0.0",
+    "author": "Sabreen Irfana - Software AG, Global Presales",
+    "description":"The Route Tracker widget will display route along with realtime device status.",
     "license": "Apache 2.0"
   }
 }
