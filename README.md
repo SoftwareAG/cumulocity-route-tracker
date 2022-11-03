@@ -2,7 +2,7 @@
 
 ## Overview
 
-This widget will display route, geofence along with realtime device status and also one can enable the smart rule which gets trigged when smart rule violation happens.",
+This widget will display route, geofence along with realtime device status and also one can enable the smart rule which gets trigged when smart rule violation happens.
 
 ## Representation
 
@@ -37,15 +37,13 @@ This widget will display route, geofence along with realtime device status and a
 
 ```
 
- "@angular/cdk": "^11.2.13",
+ "@angular/cdk": "^11.1.2",
 
  "@angular/core": "~11.1.2",
 
-"@c8y/ngx-components": "1011.0.12",
+"@c8y/ngx-components": "1011.0.15",
 
-"@c8y/ng1-modules": "1011.0.12",
-
-"@c8y/style": "1011.0.12",
+"@c8y/style": "1011.0.15",
 
 angular-resize-event": "^2.1.0"
 
@@ -57,8 +55,9 @@ angular-resize-event": "^2.1.0"
 
 "leaflet.markercluster": "^1.4.1
 
-"moment": "^2.26.0",
+"moment": "^2.26.0"
 
+"prettier": "^2.6.2"
 ```
 
 **Installation Steps For App Builder:**
