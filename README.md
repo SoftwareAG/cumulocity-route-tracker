@@ -181,7 +181,8 @@ Congratulations! Route Tracker widget is configured.
 2. If configured Smart rule with provided name doesnt exist then a new rule get created and if the rule with provided name exists then it updates the existing rule.
 **Note** Make sure for different devices and for differnt configuration a uinique smart rule name need to be provided else it overrides if the rule with name exists.
 
-To check the smart rules please navigate to Application switcher -> Cockpit -> Configuration -> Global smart rule.
+To check the smart rules please navigate to Application Switcher -> Cockpit -> Configuration -> Global smart rule
+
 ------------------------------
   
   
