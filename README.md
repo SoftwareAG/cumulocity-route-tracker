@@ -37,9 +37,9 @@ This widget will display route, geofence along with realtime device status and a
 
 ```
 
- "@angular/cdk": "^11.1.2",
+"@angular/cdk": "^11.1.2",
 
- "@angular/core": "~11.1.2",
+"@angular/core": "~11.1.2",
 
 "@c8y/ngx-components": "1011.0.15",
 
