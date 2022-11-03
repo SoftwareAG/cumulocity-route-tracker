@@ -169,7 +169,7 @@ This guide will teach you how to add widget in your existing or new dashboard.
 
 
 
-Congratulations! BoonLogic Amber setting widget is configured.
+Congratulations! Route Tracker widget is configured.
 
 
 ## User Guide
