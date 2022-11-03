@@ -1,4 +1,5 @@
-# Cumulocity Route Tracker Widget
+# Cumulocity Route Tracker Widget[<img width="35" src="https://user-images.githubusercontent.com/67993842/97668428-f360cc80-1aa7-11eb-8801-da578bda4334.png"/>](https://github.com/SoftwareAG/cumulocity-route-tracker/releases/download/2.0.0/route-tracker-runtime-widget-2.0.0.zip)
+
 ## Overview
 
 This widget will display route, geofence along with realtime device status and also one can enable the smart rule which gets trigged when smart rule violation happens.",
