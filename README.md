@@ -8,6 +8,9 @@ This widget will display route, geofence along with realtime device status and a
 
 ![RouteTrackermain](https://user-images.githubusercontent.com/24636020/186117425-55a2c67b-1dbf-47ba-b50f-5331e07c580a.PNG)
 
+
+### ⚠️ This project is no longer under development. Please use [cumulocity-route-tracker-plugin](https://github.com/SoftwareAG/cumulocity-route-tracker-plugin) for Application Builder >=2.x.x and Cumulocity >=1016.x.x⚠️
+
 ## Supported Product Versions
 
 ###  Route Tracker  widget - Cumulocity/Application builder version:
